@@ -25,7 +25,7 @@ namespace cinema_core.Controllers
         // GET: api/screen-types
         [HttpGet]
         //[Authorize(Policy =Policies.Admin)]
-        [Authorize()]
+        [Authorize(Roles =Authorize.Admin)]
         public IActionResult Get()
         {
             var screenTypes = screenTypeRepository.GetScreenTypes();
