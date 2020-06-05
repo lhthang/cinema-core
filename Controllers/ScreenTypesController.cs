@@ -6,6 +6,7 @@ using cinema_core.DTOs.ScreenTypeDTO;
 using cinema_core.Models;
 using cinema_core.Models.User;
 using cinema_core.Repositories;
+using cinema_core.Utils.MovieProxy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,7 @@ namespace cinema_core.Controllers
         public IActionResult Get()
         {
             var screenTypes = screenTypeRepository.GetScreenTypes();
-            
+            MovieProxy.GetMovieByIMDB("s");
             return Ok(screenTypes);
         }
 
