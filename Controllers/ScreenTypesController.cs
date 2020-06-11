@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using cinema_core.DTOs.ScreenTypeDTO;
-using cinema_core.Models;
+﻿using cinema_core.Models;
 using cinema_core.Models.User;
 using cinema_core.Repositories;
 using cinema_core.Utils.MovieProxy;

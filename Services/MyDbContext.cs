@@ -1,5 +1,6 @@
 ﻿using cinema_core.Models;
 using cinema_core.Models.Rate;
+using cinema_core.Models.Room;
 using cinema_core.Models.User;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,6 +18,9 @@ namespace cinema_core.Services
 
         public virtual DbSet<ScreenType> ScreenTypes { get; set; }
         public virtual DbSet<Rate> Rates { get; set; }
+
+        public virtual DbSet<Room> Rooms { get; set; }
+        public virtual DbSet<RoomScreenType> RoomScreenTypes { get; set; }
 
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
@@ -38,6 +42,19 @@ namespace cinema_core.Services
                 .HasOne(b => b.Role)
                 .WithMany(bc => bc.UsersRole)
                 .HasForeignKey(b => b.RoleId);
+
+            modelBuilder.Entity<RoomScreenType>()
+               .HasKey(rs => new { rs.RoomId, rs.ScreenTypeId });
+
+            modelBuilder.Entity<RoomScreenType>()
+                .HasOne(b => b.Room)
+                .WithMany(bc => bc.RoomScreenTypes)
+                .HasForeignKey(b => b.RoomId);
+
+            modelBuilder.Entity<RoomScreenType>()
+                .HasOne(b => b.ScreenType)
+                .WithMany(bc => bc.RoomScreenTypes)
+                .HasForeignKey(b => b.ScreenTypeId);
         }
     }
 }
