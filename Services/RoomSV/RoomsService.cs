@@ -1,4 +1,5 @@
 ﻿using cinema_core.DTOs.RoomDTOs;
+using cinema_core.Form.Room;
 using cinema_core.Models.Room;
 using cinema_core.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,35 @@ namespace cinema_core.Services.RoomSV
             dbContext = context;
         }
 
+        public Room CreateRoom(RoomRequest roomRequest)
+        {
+            var room = new Room()
+            {
+                Name=roomRequest.Name,
+                TotalRows=roomRequest.TotalRows,
+                TotalSeatsPerRow=roomRequest.TotalSeatsPerRow,
+            };
+            var screenTypes = dbContext.ScreenTypes.Where(s => roomRequest.ScreenTypeIds.Contains(s.Id)).ToList();
+            foreach (var screen in screenTypes)
+            {
+                var roomScreenType = new RoomScreenType()
+                {
+                    ScreenType = screen,
+                    Room = room,
+                };
+                dbContext.Add(roomScreenType);
+            }
+            dbContext.Add(room);
+            var isSuccess = Save();
+            if (!isSuccess) return null;
+            return room;
+        }
+
+        public bool DeleteRoom(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public ICollection<RoomDTO> GetAllRooms()
         {
             List<RoomDTO> results = new List<RoomDTO>();
@@ -28,6 +58,22 @@ namespace cinema_core.Services.RoomSV
                 results.Add(new RoomDTO(room));
             }
             return results;
+        }
+
+        public Room GetRoomById(int id)
+        {
+            var room = dbContext.Rooms.Where(r => r.Id == id).Include(rs => rs.RoomScreenTypes).ThenInclude(s => s.ScreenType).FirstOrDefault();
+            return room;
+        }
+
+        public bool Save()
+        {
+            return dbContext.SaveChanges() > 0;
+        }
+
+        public bool UpdateRoom(RoomRequest roomRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }
