@@ -64,6 +64,43 @@ namespace cinema_core.Controllers
             return CreatedAtRoute("GetRoom", new { id = room.Id }, new RoomDTO(room));
         }
 
+        // POST: api/rooms
+        [HttpPut("{id}")]
+        public IActionResult Put(int id,[FromBody] RoomRequest roomRequest)
+        {
+            //if (roomRepository.GetRoomById(id) == null) return NotFound();
+
+            if (roomRequest == null) return StatusCode(400, ModelState);
+
+            var statusCode = ValidateRoom(roomRequest);
+
+            if (!ModelState.IsValid)
+                return StatusCode(statusCode.StatusCode);
+
+            var room = roomRepository.UpdateRoom(id,roomRequest);
+            if (room==null)
+            {
+                ModelState.AddModelError("", "Something went wrong when save room");
+                return StatusCode(400, ModelState);
+            }
+            return CreatedAtRoute("GetRoom", new { id = id }, new RoomDTO(room));
+        }
+
+        // DELETE: api/room/5
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var isExist = roomRepository.GetRoomById(id);
+            if (isExist == null) return NotFound();
+
+            if (!roomRepository.DeleteRoom(isExist))
+            {
+                ModelState.AddModelError("", "Something went wrong when delete room");
+                return StatusCode(400, ModelState);
+            }
+            return Ok(isExist);
+        }
+
         private StatusCodeResult ValidateRoom(RoomRequest roomRequest)
         {
             if (roomRequest == null || !ModelState.IsValid) return BadRequest();

@@ -15,9 +15,9 @@ namespace cinema_core.Repositories
 
         Room CreateRoom(RoomRequest roomRequest);
 
-        bool UpdateRoom(RoomRequest roomRequest);
+        Room UpdateRoom(int id,RoomRequest roomRequest);
 
-        bool DeleteRoom(int id);
+        bool DeleteRoom(Room room);
 
         bool Save();
     }

@@ -43,9 +43,10 @@ namespace cinema_core.Services.RoomSV
             return room;
         }
 
-        public bool DeleteRoom(int id)
+        public bool DeleteRoom(Room room)
         {
-            throw new NotImplementedException();
+            dbContext.Remove(room);
+            return Save();
         }
 
         public ICollection<RoomDTO> GetAllRooms()
@@ -71,9 +72,34 @@ namespace cinema_core.Services.RoomSV
             return dbContext.SaveChanges() > 0;
         }
 
-        public bool UpdateRoom(RoomRequest roomRequest)
+        public Room UpdateRoom(int id, RoomRequest roomRequest)
         {
-            throw new NotImplementedException();
+            var room = dbContext.Rooms.Where(r => r.Id == id).FirstOrDefault();
+
+            var screenTypesIsDelete = dbContext.RoomScreenTypes.Where(rs => rs.RoomId == id).ToList();
+            
+            if (screenTypesIsDelete!=null)
+                dbContext.RemoveRange(screenTypesIsDelete);
+
+            room.Name = roomRequest.Name;
+            room.TotalRows = roomRequest.TotalRows;
+            room.TotalSeatsPerRow = roomRequest.TotalSeatsPerRow;
+
+            var screenTypes = dbContext.ScreenTypes.Where(s => roomRequest.ScreenTypeIds.Contains(s.Id)).ToList();
+            foreach (var screen in screenTypes)
+            {
+                var roomScreenType = new RoomScreenType()
+                {
+                    ScreenType = screen,
+                    Room = room,
+                };
+                dbContext.Add(roomScreenType);
+            }
+            dbContext.Update(room);
+            var isSuccess= Save();
+            if (!isSuccess) return null;
+            return room;
+            
         }
     }
 }
