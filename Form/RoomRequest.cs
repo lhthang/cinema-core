@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace cinema_core.Form.Room
+namespace cinema_core.Form
 {
     public class RoomRequest
     {

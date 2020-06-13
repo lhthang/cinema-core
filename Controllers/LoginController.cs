@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-using cinema_core.Form.User;
+using cinema_core.Form;
 using cinema_core.Repositories;
 using cinema_core.Utils.JWT;
 using cinema_core.Utils.Password;
