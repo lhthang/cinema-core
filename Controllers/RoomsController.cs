@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using cinema_core.DTOs.RoomDTOs;
 using cinema_core.Form.Room;
-using cinema_core.Models.Room;
 using cinema_core.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

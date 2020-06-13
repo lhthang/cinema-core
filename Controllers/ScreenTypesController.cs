@@ -1,6 +1,6 @@
 ﻿using cinema_core.Models;
-using cinema_core.Models.User;
 using cinema_core.Repositories;
+using cinema_core.Utils;
 using cinema_core.Utils.MovieProxy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

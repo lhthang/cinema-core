@@ -1,18 +1,18 @@
 ﻿using cinema_core.DTOs.ScreenTypeDTOs;
 using cinema_core.Models;
-using cinema_core.Repositories;
+using cinema_core.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace cinema_core.Services.ScreenTypeSV
+namespace cinema_core.Repositories.Implements
 {
-    public class ScreenTypesService : IScreenTypeRepository
+    public class ScreenTypeRepository : IScreenTypeRepository
     {
         private MyDbContext dbContext;
 
-        public ScreenTypesService(MyDbContext context)
+        public ScreenTypeRepository(MyDbContext context)
         {
             dbContext = context;
         }
@@ -59,7 +59,8 @@ namespace cinema_core.Services.ScreenTypeSV
         public bool Save()
         {
             var save = dbContext.SaveChanges();
-            return save > 0;        }
+            return save > 0;
+        }
 
         public bool UpdateScreenType(ScreenType screenType)
         {

@@ -1,7 +1,6 @@
 ﻿
 using cinema_core.DTOs.ScreenTypeDTOs;
 using cinema_core.Models;
-using cinema_core.Models.Room;
 using System;
 using System.Collections.Generic;
 using System.Linq;

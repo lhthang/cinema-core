@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using cinema_core.Services;
+using cinema_core.Models;
+using cinema_core.Models.Base;
 
 namespace cinema_core.Migrations
 {

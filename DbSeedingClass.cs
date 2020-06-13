@@ -1,5 +1,5 @@
-﻿using cinema_core.Models.User;
-using cinema_core.Services;
+﻿using cinema_core.Models;
+using cinema_core.Models.Base;
 using cinema_core.Utils.Password;
 using System;
 using System.Collections.Generic;

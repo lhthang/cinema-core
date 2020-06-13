@@ -1,4 +1,4 @@
-﻿using cinema_core.Models.User;
+﻿using cinema_core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

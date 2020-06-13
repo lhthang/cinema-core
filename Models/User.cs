@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace cinema_core.Models.User
+namespace cinema_core.Models
 {
     public class User
     {

@@ -1,20 +1,20 @@
 ﻿using cinema_core.DTOs.RoomDTOs;
 using cinema_core.Form.Room;
-using cinema_core.Models.Room;
-using cinema_core.Repositories;
+using cinema_core.Models;
+using cinema_core.Models.Base;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace cinema_core.Services.RoomSV
+namespace cinema_core.Repositories.Implements
 {
-    public class RoomsService : IRoomRepository
+    public class RoomRepository : IRoomRepository
     {
         private MyDbContext dbContext;
 
-        public RoomsService(MyDbContext context)
+        public RoomRepository(MyDbContext context)
         {
             dbContext = context;
         }
@@ -23,9 +23,9 @@ namespace cinema_core.Services.RoomSV
         {
             var room = new Room()
             {
-                Name=roomRequest.Name,
-                TotalRows=roomRequest.TotalRows,
-                TotalSeatsPerRow=roomRequest.TotalSeatsPerRow,
+                Name = roomRequest.Name,
+                TotalRows = roomRequest.TotalRows,
+                TotalSeatsPerRow = roomRequest.TotalSeatsPerRow,
             };
             var screenTypes = dbContext.ScreenTypes.Where(s => roomRequest.ScreenTypeIds.Contains(s.Id)).ToList();
             foreach (var screen in screenTypes)
@@ -52,7 +52,7 @@ namespace cinema_core.Services.RoomSV
         public ICollection<RoomDTO> GetAllRooms()
         {
             List<RoomDTO> results = new List<RoomDTO>();
-            List<Room> rooms = dbContext.Rooms.Include(rs=>rs.RoomScreenTypes).ThenInclude(s=>s.ScreenType).OrderBy(r => r.Id).ToList();
+            List<Room> rooms = dbContext.Rooms.Include(rs => rs.RoomScreenTypes).ThenInclude(s => s.ScreenType).OrderBy(r => r.Id).ToList();
             foreach (Room room in rooms)
             {
                 //System.Diagnostics.Debug.WriteLine();
@@ -77,8 +77,8 @@ namespace cinema_core.Services.RoomSV
             var room = dbContext.Rooms.Where(r => r.Id == id).FirstOrDefault();
 
             var screenTypesIsDelete = dbContext.RoomScreenTypes.Where(rs => rs.RoomId == id).ToList();
-            
-            if (screenTypesIsDelete!=null)
+
+            if (screenTypesIsDelete != null)
                 dbContext.RemoveRange(screenTypesIsDelete);
 
             room.Name = roomRequest.Name;
@@ -96,10 +96,10 @@ namespace cinema_core.Services.RoomSV
                 dbContext.Add(roomScreenType);
             }
             dbContext.Update(room);
-            var isSuccess= Save();
+            var isSuccess = Save();
             if (!isSuccess) return null;
             return room;
-            
+
         }
     }
 }
