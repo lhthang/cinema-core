@@ -37,7 +37,7 @@ namespace cinema_core
                    },
                 },
             };
-            if (context.Users.Any(u => u.Username == "uit-admin") == false)
+            if (context.Users.Any(u => u.Username == "cinema-admin") == false)
             {
                 context.AddRange(user);
                 context.SaveChanges();
