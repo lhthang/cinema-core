@@ -26,6 +26,7 @@ namespace cinema_core.Models
         public virtual ICollection<MovieScreenType> MovieScreenTypes { get; set; }
 
         public virtual ICollection<MovieActor> MovieActors { get; set; }
+        public virtual ICollection<MovieGenre> MovieGenres { get; set; }
 
     }
 }
