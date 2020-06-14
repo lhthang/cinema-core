@@ -63,7 +63,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Something went wrong when save movie" };
                 return StatusCode(400, error);
             }
-            return CreatedAtRoute("GetMovie", new { id = movie.Id }, new MovieDTO(movie));
+            return RedirectToRoute("GetMovie", new { id = movie.Id });
         }
 
         private StatusCodeResult ValidateMovie(MovieRequest movieRequest)
