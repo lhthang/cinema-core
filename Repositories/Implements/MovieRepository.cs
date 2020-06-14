@@ -86,6 +86,20 @@ namespace cinema_core.Repositories.Implements
             return movie;
         }
 
+        public ICollection<MovieDTO> GetAllMoviesComing(int day)
+        {
+            var movies = dbContext.Movies.Where(m => DateTime.Compare(m.ReleasedAt, DateTime.Now) >=0 && DateTime.Compare(m.ReleasedAt, DateTime.Now.AddDays(day)) <= 0)
+                .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
+                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).ToList();
+
+            List<MovieDTO> movieDTOs = new List<MovieDTO>();
+            foreach (var movie in movies)
+            {
+                movieDTOs.Add(new MovieDTO(movie));
+            }
+            return movieDTOs;
+        }
+
         public ICollection<MovieDTO> GetAllMoviesNowOn()
         {
             var movies = dbContext.Movies.Where(m => DateTime.Compare(m.ReleasedAt, DateTime.Now) <= 0 && DateTime.Compare(m.EndAt, DateTime.Now) >= 0)

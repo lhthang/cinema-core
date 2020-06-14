@@ -10,6 +10,8 @@ namespace cinema_core.Repositories.Interfaces
 {
     public interface IMovieRepository
     {
+        public ICollection<MovieDTO> GetAllMoviesComing(int day);
+
         public ICollection<MovieDTO> GetAllMoviesNowOn();
         public Movie CreateMovie(MovieRequest movieRequest);
 

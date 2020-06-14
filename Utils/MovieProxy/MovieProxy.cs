@@ -1,4 +1,5 @@
 ﻿using cinema_core.Models;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,10 @@ namespace cinema_core.Utils.MovieProxy
             movie.Poster = json["Poster"];
 
             string list = json["Runtime"];
-            movie.Runtime = int.Parse(list.Split(" min")[0]);
+            if (!list.Contains("N/A"))
+                movie.Runtime = int.Parse(list.Split(" min")[0]);
+            else
+                movie.Runtime = 0;
 
             list = json["Director"];
             List<string> directors = list.Split(", ").ToList();
