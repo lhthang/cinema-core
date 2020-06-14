@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cinema_core.Controllers
 {
-    [Route("api/movies")]
+    [Route("api/[controller]")]
     [ApiController]
     public class MoviesController : Controller
     {
@@ -23,6 +23,14 @@ namespace cinema_core.Controllers
         {
             this.screenTypeRepository = screenTypeRepository;
             this.movieRepository = repository;
+        }
+
+        // GET: api/movies/now-on
+        [HttpGet("[action]")]
+        public IActionResult GetAllMoviesNowOn()
+        {
+            var movie = movieRepository.GetAllMoviesNowOn();
+            return Ok(movie);
         }
 
         // GET: api/rooms/5
@@ -36,6 +44,7 @@ namespace cinema_core.Controllers
             return Ok(movieDTO);
         }
 
+
         // POST: api/rooms
         [HttpPost]
         public IActionResult Post([FromBody] MovieRequest movieRequest)
@@ -46,7 +55,7 @@ namespace cinema_core.Controllers
 
 
             if (!ModelState.IsValid)
-                return StatusCode(statusCode.StatusCode);
+                return StatusCode(statusCode.StatusCode,ModelState);
 
             var movie = movieRepository.CreateMovie(movieRequest);
             if (movie == null)

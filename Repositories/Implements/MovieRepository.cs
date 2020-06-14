@@ -1,4 +1,5 @@
-﻿using cinema_core.Form;
+﻿using cinema_core.DTOs.MovieDTOs;
+using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
 using cinema_core.Repositories.Interfaces;
@@ -31,7 +32,7 @@ namespace cinema_core.Repositories.Implements
                 Directors = response.Directors.ToArray(),
                 ReleasedAt = response.ReleasedAt,
                 Poster = response.Poster,
-                EndAt = movieRequest.EndAt,
+                EndAt = DateTime.Parse(movieRequest.EndAt),
                 Wallpapers = movieRequest.Wallpapers.ToArray(),
                 Trailer = movieRequest.Trailer,
                 Story = movieRequest.Story,
@@ -40,7 +41,7 @@ namespace cinema_core.Repositories.Implements
             var screenTypes = dbContext.ScreenTypes.Where(s => movieRequest.ScreenTypeIds.Contains(s.Id)).ToList();
 
             List<string> actorNames = new List<string>();
-            foreach(var actor in movieRequest.Actors)
+            foreach(var actor in response.Actors)
             {
                 actorNames.Add(actor.Name);
             }
@@ -49,7 +50,7 @@ namespace cinema_core.Repositories.Implements
 
             //var isNot = movieRequest.Actors.Where(a => !actors.Any(a2=>a2.Name==a.Name)).ToList();
 
-            var isNotExistActors = movieRequest.Actors.Where(a => !actors.Any(a2 => a2.Name == a.Name)).ToList();
+            var isNotExistActors = response.Actors.Where(a => !actors.Any(a2 => a2.Name == a.Name)).ToList();
             
             if (isNotExistActors != null)
             {
@@ -83,6 +84,20 @@ namespace cinema_core.Repositories.Implements
             var isSuccess = Save();
             if (!isSuccess) return null;
             return movie;
+        }
+
+        public ICollection<MovieDTO> GetAllMoviesNowOn()
+        {
+            var movies = dbContext.Movies.Where(m => DateTime.Compare(m.ReleasedAt, DateTime.Now) <= 0 && DateTime.Compare(m.EndAt, DateTime.Now) >= 0)
+                .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
+                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).ToList();
+
+            List<MovieDTO> movieDTOs = new List<MovieDTO>();
+            foreach (var movie in movies)
+            {
+                movieDTOs.Add(new MovieDTO(movie));
+            }
+            return movieDTOs;
         }
 
         public Movie GetMovieById(int id)

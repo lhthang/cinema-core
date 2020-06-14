@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using cinema_core.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,19 @@ namespace cinema_core.Utils.MovieProxy
             list = json["Language"];
             List<string> languages = list.Split(", ").ToList();
             movie.Languages = languages;
+
+            list = json["Actors"];
+            List<string> actors = list.Split(", ").ToList();
+            movie.Actors = new List<Actor>();
+            foreach(var name in actors)
+            {
+                Actor actor = new Actor()
+                {
+                    Name = name,
+                    Avatar = "",
+                };
+                movie.Actors.Add(actor);
+            }
 
             return movie;
         }
