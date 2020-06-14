@@ -20,6 +20,9 @@ namespace cinema_core.Models.Base
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<RoomScreenType> RoomScreenTypes { get; set; }
 
+        public virtual DbSet<Movie> Movies { get; set; }
+        public virtual DbSet<MovieScreenType> MovieScreenTypes { get; set; }
+
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<UserRole> UserRole { get; set; }
@@ -27,6 +30,12 @@ namespace cinema_core.Models.Base
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Movie>()
+            .Property(e => e.Wallpapers)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<UserRole>()
                .HasKey(us => new { us.RoleId, us.UserId });
@@ -53,6 +62,20 @@ namespace cinema_core.Models.Base
                 .HasOne(b => b.ScreenType)
                 .WithMany(bc => bc.RoomScreenTypes)
                 .HasForeignKey(b => b.ScreenTypeId);
+
+            //Movie-ScreenType
+            modelBuilder.Entity<MovieScreenType>()
+               .HasKey(ms => new { ms.MovieId, ms.ScreenTypeId });
+
+            modelBuilder.Entity<MovieScreenType>()
+                .HasOne(m => m.Movie)
+                .WithMany(ms => ms.MovieScreenTypes)
+                .HasForeignKey(b => b.MovieId);
+
+            modelBuilder.Entity<MovieScreenType>()
+                .HasOne(s => s.ScreenType)
+                .WithMany(ms => ms.MovieScreenTypes)
+                .HasForeignKey(s => s.ScreenTypeId);
         }
     }
 }

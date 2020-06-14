@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using cinema_core.DTOs.RoomDTOs;
 using cinema_core.Form;
 using cinema_core.Repositories;
+using cinema_core.Utils.Error;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace cinema_core.Controllers
 {
@@ -25,9 +27,14 @@ namespace cinema_core.Controllers
         }
         // GET: api/rooms
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(int skip=0,int limit=100000)
         {
-            var rooms = roomRepository.GetAllRooms();
+            if (limit <= 0)
+            {
+                var error = new Error() {Message = "Limit must be greater than 0" };
+                return StatusCode(400, error);
+            }
+            var rooms = roomRepository.GetAllRooms(skip,limit);
             return Ok(rooms);
         }
 
@@ -57,8 +64,8 @@ namespace cinema_core.Controllers
             var room = roomRepository.CreateRoom(roomRequest);
             if (room == null)
             {
-                ModelState.AddModelError("", "Something went wrong when save room");
-                return StatusCode(400, ModelState);
+                var error = new Error() { Message = "Something went wrong when save room" };
+                return StatusCode(400, error);
             }
             return CreatedAtRoute("GetRoom", new { id = room.Id }, new RoomDTO(room));
         }
@@ -79,8 +86,8 @@ namespace cinema_core.Controllers
             var room = roomRepository.UpdateRoom(id,roomRequest);
             if (room==null)
             {
-                ModelState.AddModelError("", "Something went wrong when save room");
-                return StatusCode(400, ModelState);
+                var error = new Error() { Message = "Something went wrong when save room" };
+                return StatusCode(400, error);
             }
             return CreatedAtRoute("GetRoom", new { id = id }, new RoomDTO(room));
         }
@@ -94,8 +101,8 @@ namespace cinema_core.Controllers
 
             if (!roomRepository.DeleteRoom(isExist))
             {
-                ModelState.AddModelError("", "Something went wrong when delete room");
-                return StatusCode(400, ModelState);
+                var error = new Error() { Message = "Something went wrong when delete room" };
+                return StatusCode(400, error);
             }
             return Ok(isExist);
         }

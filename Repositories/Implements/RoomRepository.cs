@@ -1,5 +1,6 @@
 ﻿using cinema_core.DTOs.RoomDTOs;
 using cinema_core.Form;
+using cinema_core.Migrations;
 using cinema_core.Models;
 using cinema_core.Models.Base;
 using Microsoft.EntityFrameworkCore;
@@ -49,10 +50,10 @@ namespace cinema_core.Repositories.Implements
             return Save();
         }
 
-        public ICollection<RoomDTO> GetAllRooms()
+        public ICollection<RoomDTO> GetAllRooms(int skip,int limit)
         {
             List<RoomDTO> results = new List<RoomDTO>();
-            List<Room> rooms = dbContext.Rooms.Include(rs => rs.RoomScreenTypes).ThenInclude(s => s.ScreenType).OrderBy(r => r.Id).ToList();
+            List<Room> rooms = dbContext.Rooms.Include(rs => rs.RoomScreenTypes).ThenInclude(s => s.ScreenType).OrderBy(r => r.Id).Skip(skip).Take(limit).ToList();
             foreach (Room room in rooms)
             {
                 //System.Diagnostics.Debug.WriteLine();
