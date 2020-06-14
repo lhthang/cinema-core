@@ -22,6 +22,9 @@ namespace cinema_core.Models.Base
 
         public virtual DbSet<Movie> Movies { get; set; }
         public virtual DbSet<MovieScreenType> MovieScreenTypes { get; set; }
+        
+        public virtual DbSet<Actor> Actors { get; set; }
+        public virtual DbSet<MovieActor> MovieActors { get; set; }
 
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
@@ -33,6 +36,18 @@ namespace cinema_core.Models.Base
 
             modelBuilder.Entity<Movie>()
             .Property(e => e.Wallpapers)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+            modelBuilder.Entity<Movie>()
+            .Property(e => e.Languages)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+            modelBuilder.Entity<Movie>()
+            .Property(e => e.Directors)
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
@@ -76,6 +91,20 @@ namespace cinema_core.Models.Base
                 .HasOne(s => s.ScreenType)
                 .WithMany(ms => ms.MovieScreenTypes)
                 .HasForeignKey(s => s.ScreenTypeId);
+
+            //Movie-Actor
+            modelBuilder.Entity<MovieActor>()
+               .HasKey(ms => new { ms.MovieId, ms.ActorId });
+
+            modelBuilder.Entity<MovieActor>()
+                .HasOne(m => m.Movie)
+                .WithMany(ms => ms.MovieActors)
+                .HasForeignKey(b => b.MovieId);
+
+            modelBuilder.Entity<MovieActor>()
+                .HasOne(s => s.Actor)
+                .WithMany(ms => ms.MovieActors)
+                .HasForeignKey(s => s.ActorId);
         }
     }
 }

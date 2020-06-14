@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace cinema_core.DTOs.MovieDTOs
+{
+    public class ActorDTO
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Avatar { get; set; }
+    }
+}

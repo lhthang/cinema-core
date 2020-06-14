@@ -1,5 +1,6 @@
 ﻿using cinema_core.Repositories;
 using cinema_core.Repositories.Implements;
+using cinema_core.Repositories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace cinema_core
             services.AddScoped<IScreenTypeRepository, ScreenTypeRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IMovieRepository, MovieRepository>();
         }
     }
 }

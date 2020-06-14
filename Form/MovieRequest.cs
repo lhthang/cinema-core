@@ -1,0 +1,28 @@
+﻿using cinema_core.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace cinema_core.Form
+{
+    public class MovieRequest
+    {
+        [Required]
+        public string Imdb { get; set; }
+
+        [Required]
+        public List<int> ScreenTypeIds { get; set; }
+
+        [Required]
+        public DateTime EndAt { get; set; }
+        public List<string> Wallpapers { get; set; }
+        public string Trailer { get; set; }
+        [Required]
+        public string Story { get; set; }
+
+        [Required]
+        public List<Actor> Actors { get; set; }
+    }
+}

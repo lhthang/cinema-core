@@ -9,16 +9,30 @@ namespace cinema_core.Utils.MovieProxy
 {
     public static class MovieProxy
     {
-        public static void GetMovieByIMDB(string imdb)
+        public static MovieResponse GetMovieByIMDB(string imdb)
         {
-            string result = new WebClient().DownloadString("http://www.omdbapi.com/?apikey=b9d9362f&i=" + "tt4154796");
+            string result = new WebClient().DownloadString("http://www.omdbapi.com/?apikey=b9d9362f&i=" + imdb);
             MovieResponse movie = new MovieResponse();
             dynamic json = JsonConvert.DeserializeObject(result);
             movie.Title = json["Title"];
+            movie.Country = json["Country"];
+            movie.Poster = json["Poster"];
 
-            string list = json["Actors"];
-            List<string> actors = list.Split(", ").ToList();
-            movie.Actors = actors;
+            string list = json["Runtime"];
+            movie.Runtime = int.Parse(list.Split(" min")[0]);
+
+            list = json["Director"];
+            List<string> directors = list.Split(", ").ToList();
+            movie.Directors = directors;
+
+            list = json["Released"];
+            movie.ReleasedAt = DateTime.Parse(list);
+
+            list = json["Language"];
+            List<string> languages = list.Split(", ").ToList();
+            movie.Languages = languages;
+
+            return movie;
         }
     }
 }
