@@ -37,6 +37,43 @@ namespace cinema_core.Migrations
                     b.ToTable("Actors");
                 });
 
+            modelBuilder.Entity("cinema_core.Models.Cluster", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clusters");
+                });
+
+            modelBuilder.Entity("cinema_core.Models.ClusterUser", b =>
+                {
+                    b.Property<int>("ClusterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClusterId", "UserId");
+
+                    b.HasIndex("ClusterId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("ClusterUsers");
+                });
+
             modelBuilder.Entity("cinema_core.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
@@ -159,6 +196,9 @@ namespace cinema_core.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ClusterId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -169,6 +209,8 @@ namespace cinema_core.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClusterId");
 
                     b.ToTable("Rooms");
                 });
@@ -249,12 +291,19 @@ namespace cinema_core.Migrations
                     b.ToTable("UserRole");
                 });
 
-            modelBuilder.Entity("cinema_core.Models.Movie", b =>
+            modelBuilder.Entity("cinema_core.Models.ClusterUser", b =>
                 {
-                    b.HasOne("cinema_core.Models.Rate", "Rate")
-                        .WithMany("Movies")
-                        .HasForeignKey("RateId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                    b.HasOne("cinema_core.Models.Cluster", "Cluster")
+                        .WithOne("ClusterUser")
+                        .HasForeignKey("cinema_core.Models.ClusterUser", "ClusterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cinema_core.Models.User", "User")
+                        .WithOne("ClusterUser")
+                        .HasForeignKey("cinema_core.Models.ClusterUser", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("cinema_core.Models.MovieActor", b =>
@@ -283,6 +332,15 @@ namespace cinema_core.Migrations
                     b.HasOne("cinema_core.Models.ScreenType", "ScreenType")
                         .WithMany("MovieScreenTypes")
                         .HasForeignKey("ScreenTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("cinema_core.Models.Room", b =>
+                {
+                    b.HasOne("cinema_core.Models.Cluster", "Cluster")
+                        .WithMany("Rooms")
+                        .HasForeignKey("ClusterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
