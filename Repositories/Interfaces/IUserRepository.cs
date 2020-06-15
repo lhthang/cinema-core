@@ -10,5 +10,6 @@ namespace cinema_core.Repositories
     {
         ICollection<Role> GetRolesOfUser(int id);
         User GetUserByUsername(string username);
+        User GetUserById(int id);
     }
 }
