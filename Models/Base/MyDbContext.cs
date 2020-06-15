@@ -122,6 +122,12 @@ namespace cinema_core.Models.Base
                 .HasMany(c => c.Rooms)
                 .WithOne(r => r.Cluster)
                 .HasForeignKey(r => r.ClusterId);
+                
+            //Movie-Rate
+            modelBuilder.Entity<Movie>()
+                .HasOne(s => s.Rate)
+                .WithMany(m => m.Movies)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

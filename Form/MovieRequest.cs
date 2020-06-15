@@ -22,5 +22,8 @@ namespace cinema_core.Form
         public string Trailer { get; set; }
         [Required]
         public string Story { get; set; }
+
+        [Required]
+        public int RateId { get; set; }
     }
 }

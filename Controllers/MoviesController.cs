@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using cinema_core.DTOs.MovieDTOs;
 using cinema_core.Form;
+using cinema_core.Models;
 using cinema_core.Repositories;
 using cinema_core.Repositories.Interfaces;
 using cinema_core.Utils.Error;
@@ -18,11 +19,13 @@ namespace cinema_core.Controllers
     {
         private IMovieRepository movieRepository;
         private IScreenTypeRepository screenTypeRepository;
+        private IRateRepository rateRepository;
 
-        public MoviesController(IMovieRepository repository,IScreenTypeRepository screenTypeRepository)
+        public MoviesController(IMovieRepository repository,IScreenTypeRepository screenTypeRepository, IRateRepository rateRepository)
         {
             this.screenTypeRepository = screenTypeRepository;
             this.movieRepository = repository;
+            this.rateRepository = rateRepository;
         }
 
         // GET: api/movies/now-on
@@ -136,6 +139,11 @@ namespace cinema_core.Controllers
                     return StatusCode(404);
                 }
             }
+            if (rateRepository.GetRateById(movieRequest.RateId) == null)
+            {
+                ModelState.AddModelError("", $"Rate id {movieRequest.RateId} not found");
+                return StatusCode(404);
+            }
             return NoContent();
         }
 
@@ -150,6 +158,11 @@ namespace cinema_core.Controllers
                     ModelState.AddModelError("", $"Id {id} not found");
                     return StatusCode(404);
                 }
+            }
+            if (rateRepository.GetRateById(movieRequest.RateId) == null)
+            {
+                ModelState.AddModelError("", $"Rate id {movieRequest.RateId} not found");
+                return StatusCode(404);
             }
             return NoContent();
         }
