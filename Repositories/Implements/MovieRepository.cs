@@ -86,6 +86,12 @@ namespace cinema_core.Repositories.Implements
             return movie;
         }
 
+        public bool DeleteMovie(Movie movie)
+        {
+            dbContext.Remove(movie);
+            return Save();
+        }
+
         public ICollection<MovieDTO> GetAllMoviesComing(int day)
         {
             var movies = dbContext.Movies.Where(m => DateTime.Compare(m.ReleasedAt, DateTime.Now) >=0 && DateTime.Compare(m.ReleasedAt, DateTime.Now.AddDays(day)) <= 0)
@@ -124,6 +130,38 @@ namespace cinema_core.Repositories.Implements
         public bool Save()
         {
             return dbContext.SaveChanges() > 0;
+        }
+
+        public Movie UpdateMovie(int id, UpdateMovieRequest movieRequest)
+        {
+            var movie = dbContext.Movies.Where(m => m.Id == id).FirstOrDefault();
+            movie.Title = movieRequest.Title;
+            movie.Poster = movieRequest.Poster;
+            movie.EndAt = DateTime.Parse(movieRequest.EndAt);
+            movie.Wallpapers = movieRequest.Wallpapers.ToArray();
+            movie.Trailer = movieRequest.Trailer;
+            movie.Story = movieRequest.Story;
+
+            var screenTypeToDelete = dbContext.MovieScreenTypes.Where(ms => ms.MovieId == id).ToList();
+            if (screenTypeToDelete != null)
+                dbContext.RemoveRange(screenTypeToDelete);
+
+            var screenTypes = dbContext.ScreenTypes.Where(s => movieRequest.ScreenTypeIds.Contains(s.Id)).ToList();
+
+            foreach (var screenType in screenTypes)
+            {
+                var movieScreenType = new MovieScreenType()
+                {
+                    Movie = movie,
+                    ScreenType = screenType,
+                };
+                dbContext.Add(movieScreenType);
+            }
+
+            dbContext.Update(movie);
+            var isSuccess = Save();
+            if (!isSuccess) return null;
+            return movie;
         }
     }
 }

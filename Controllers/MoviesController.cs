@@ -79,7 +79,45 @@ namespace cinema_core.Controllers
             return RedirectToRoute("GetMovie", new { id = movie.Id });
         }
 
+        // POST: api/rooms
+        [HttpPut("{id}")]
+        public IActionResult Put(int id,[FromBody] UpdateMovieRequest movieRequest)
+        {
+            if (movieRepository.GetMovieById(id) == null) return NotFound();
+
+            if (movieRequest == null) return StatusCode(400, ModelState);
+
+            var statusCode = ValidateUpdateMovie(movieRequest);
+
+
+            if (!ModelState.IsValid)
+                return StatusCode(statusCode.StatusCode, ModelState);
+
+            var movie = movieRepository.UpdateMovie(id,movieRequest);
+            if (movie == null)
+            {
+                var error = new Error() { Message = "Something went wrong when save movie" };
+                return StatusCode(400, error);
+            }
+            return RedirectToRoute("GetMovie", new { id = movie.Id });
+        }
+
         private StatusCodeResult ValidateMovie(MovieRequest movieRequest)
+        {
+            if (movieRequest == null || !ModelState.IsValid) return BadRequest();
+
+            foreach (var id in movieRequest.ScreenTypeIds)
+            {
+                if (screenTypeRepository.GetScreenTypeById(id) == null)
+                {
+                    ModelState.AddModelError("", $"Id {id} not found");
+                    return StatusCode(404);
+                }
+            }
+            return NoContent();
+        }
+
+        private StatusCodeResult ValidateUpdateMovie(UpdateMovieRequest movieRequest)
         {
             if (movieRequest == null || !ModelState.IsValid) return BadRequest();
 
