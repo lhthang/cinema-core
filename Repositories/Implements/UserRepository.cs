@@ -26,5 +26,10 @@ namespace cinema_core.Repositories.Implements
         {
             return myDbContext.Users.Where(u => u.Username == username).FirstOrDefault();
         }
+
+        public User GetUserById(int id)
+        {
+            return myDbContext.Users.Where(u => u.Id == id).FirstOrDefault();
+        }
     }
 }
