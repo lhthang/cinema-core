@@ -26,6 +26,14 @@ namespace cinema_core.Controllers
         }
 
         // GET: api/movies/now-on
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var movie = movieRepository.GetAllMovies();
+            return Ok(movie);
+        }
+
+        // GET: api/movies/now-on
         [HttpGet("[action]")]
         public IActionResult GetAllMoviesNowOn()
         {
@@ -100,6 +108,20 @@ namespace cinema_core.Controllers
                 return StatusCode(400, error);
             }
             return RedirectToRoute("GetMovie", new { id = movie.Id });
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var isExist = movieRepository.GetMovieById(id);
+            if (isExist == null) return NotFound();
+
+            if (!movieRepository.DeleteMovie(isExist))
+            {
+                var error = new Error() { Message = "Something went wrong when save movie" };
+                return StatusCode(400, error);
+            }
+            return Ok(new MovieDTO(isExist));
         }
 
         private StatusCodeResult ValidateMovie(MovieRequest movieRequest)

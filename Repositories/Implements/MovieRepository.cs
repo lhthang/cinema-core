@@ -92,11 +92,25 @@ namespace cinema_core.Repositories.Implements
             return Save();
         }
 
+        public ICollection<MovieDTO> GetAllMovies()
+        {
+            var movies = dbContext.Movies.OrderByDescending(m=>m.ReleasedAt)
+                .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
+                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).ToList();
+
+            List<MovieDTO> movieDTOs = new List<MovieDTO>();
+            foreach (var movie in movies)
+            {
+                movieDTOs.Add(new MovieDTO(movie));
+            }
+            return movieDTOs;
+        }
+
         public ICollection<MovieDTO> GetAllMoviesComing(int day)
         {
             var movies = dbContext.Movies.Where(m => DateTime.Compare(m.ReleasedAt, DateTime.Now) >=0 && DateTime.Compare(m.ReleasedAt, DateTime.Now.AddDays(day)) <= 0)
                 .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
-                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).ToList();
+                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).OrderBy(m => m.ReleasedAt).ToList();
 
             List<MovieDTO> movieDTOs = new List<MovieDTO>();
             foreach (var movie in movies)
@@ -110,7 +124,7 @@ namespace cinema_core.Repositories.Implements
         {
             var movies = dbContext.Movies.Where(m => DateTime.Compare(m.ReleasedAt, DateTime.Now) <= 0 && DateTime.Compare(m.EndAt, DateTime.Now) >= 0)
                 .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
-                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).ToList();
+                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).OrderBy(m => m.ReleasedAt).ToList();
 
             List<MovieDTO> movieDTOs = new List<MovieDTO>();
             foreach (var movie in movies)
