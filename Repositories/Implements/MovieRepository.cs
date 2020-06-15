@@ -3,6 +3,7 @@ using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
 using cinema_core.Repositories.Interfaces;
+using cinema_core.Utils;
 using cinema_core.Utils.MovieProxy;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,18 +26,10 @@ namespace cinema_core.Repositories.Implements
             MovieResponse response = MovieProxy.GetMovieByIMDB(movieRequest.Imdb);
             var movie = new Movie()
             {
-                Title = response.Title,
-                Country = response.Country,
-                Languages = response.Languages.ToArray(),
-                Runtime = response.Runtime,
-                Directors = response.Directors.ToArray(),
-                ReleasedAt = response.ReleasedAt,
-                Poster = response.Poster,
                 EndAt = DateTime.Parse(movieRequest.EndAt),
-                Wallpapers = movieRequest.Wallpapers.ToArray(),
-                Trailer = movieRequest.Trailer,
-                Story = movieRequest.Story,
             };
+            Coppier<MovieResponse, Movie>.Copy(response, movie);
+            Coppier<MovieRequest, Movie>.Copy(movieRequest, movie);
 
             var rate = dbContext.Rates.Where(r => movieRequest.RateId==r.Id).FirstOrDefault();
             movie.Rate = rate;
@@ -157,12 +150,8 @@ namespace cinema_core.Repositories.Implements
         public Movie UpdateMovie(int id, UpdateMovieRequest movieRequest)
         {
             var movie = dbContext.Movies.Where(m => m.Id == id).FirstOrDefault();
-            movie.Title = movieRequest.Title;
-            movie.Poster = movieRequest.Poster;
             movie.EndAt = DateTime.Parse(movieRequest.EndAt);
-            movie.Wallpapers = movieRequest.Wallpapers.ToArray();
-            movie.Trailer = movieRequest.Trailer;
-            movie.Story = movieRequest.Story;
+            Coppier<UpdateMovieRequest, Movie>.Copy(movieRequest, movie);
 
             var rate = dbContext.Rates.Where(r => movieRequest.RateId == r.Id).FirstOrDefault();
             movie.Rate = rate;

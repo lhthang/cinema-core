@@ -18,7 +18,7 @@ namespace cinema_core.Form
 
         [Required]
         public string EndAt { get; set; }
-        public List<string> Wallpapers { get; set; }
+        public string[] Wallpapers { get; set; }
         public string Trailer { get; set; }
         [Required]
         public string Story { get; set; }

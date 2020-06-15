@@ -96,6 +96,9 @@ namespace cinema_core.Migrations
                     b.Property<string>("Poster")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("RateId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ReleasedAt")
                         .HasColumnType("datetime2");
 
@@ -115,6 +118,8 @@ namespace cinema_core.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RateId");
 
                     b.ToTable("Movies");
                 });

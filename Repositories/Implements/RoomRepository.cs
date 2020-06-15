@@ -2,6 +2,7 @@
 using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
+using cinema_core.Utils;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,12 +22,8 @@ namespace cinema_core.Repositories.Implements
 
         public Room CreateRoom(RoomRequest roomRequest)
         {
-            var room = new Room()
-            {
-                Name = roomRequest.Name,
-                TotalRows = roomRequest.TotalRows,
-                TotalSeatsPerRow = roomRequest.TotalSeatsPerRow,
-            };
+            var room = new Room();
+            Coppier<RoomRequest, Room>.Copy(roomRequest, room);
             var screenTypes = dbContext.ScreenTypes.Where(s => roomRequest.ScreenTypeIds.Contains(s.Id)).ToList();
             foreach (var screen in screenTypes)
             {
@@ -81,9 +78,7 @@ namespace cinema_core.Repositories.Implements
             if (screenTypesIsDelete != null)
                 dbContext.RemoveRange(screenTypesIsDelete);
 
-            room.Name = roomRequest.Name;
-            room.TotalRows = roomRequest.TotalRows;
-            room.TotalSeatsPerRow = roomRequest.TotalSeatsPerRow;
+            Coppier<RoomRequest, Room>.Copy(roomRequest, room);
 
             var screenTypes = dbContext.ScreenTypes.Where(s => roomRequest.ScreenTypeIds.Contains(s.Id)).ToList();
             foreach (var screen in screenTypes)
