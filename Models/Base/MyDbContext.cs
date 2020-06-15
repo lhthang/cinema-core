@@ -30,6 +30,9 @@ namespace cinema_core.Models.Base
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<UserRole> UserRole { get; set; }
 
+        public virtual DbSet<Cluster> Clusters { get; set; }
+        public virtual DbSet<ClusterUser> ClusterUsers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -105,6 +108,20 @@ namespace cinema_core.Models.Base
                 .HasOne(s => s.Actor)
                 .WithMany(ms => ms.MovieActors)
                 .HasForeignKey(s => s.ActorId);
+
+            //Cluster-User (0..1 to 0..1)
+            modelBuilder.Entity<ClusterUser>()
+                .HasKey(cu => new { cu.ClusterId, cu.UserId });
+            modelBuilder.Entity<ClusterUser>()
+                .HasIndex(cu => cu.ClusterId).IsUnique();
+            modelBuilder.Entity<ClusterUser>()
+                .HasIndex(cu => cu.UserId).IsUnique();
+
+            //Cluster-Room (1 to n)
+            modelBuilder.Entity<Cluster>()
+                .HasMany(c => c.Rooms)
+                .WithOne(r => r.Cluster)
+                .HasForeignKey(r => r.ClusterId);
         }
     }
 }
