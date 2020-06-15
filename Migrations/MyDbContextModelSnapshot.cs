@@ -59,6 +59,9 @@ namespace cinema_core.Migrations
                     b.Property<string>("Poster")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("RateId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ReleasedAt")
                         .HasColumnType("datetime2");
 
@@ -78,6 +81,8 @@ namespace cinema_core.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RateId");
 
                     b.ToTable("Movies");
                 });
@@ -242,6 +247,14 @@ namespace cinema_core.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRole");
+                });
+
+            modelBuilder.Entity("cinema_core.Models.Movie", b =>
+                {
+                    b.HasOne("cinema_core.Models.Rate", "Rate")
+                        .WithMany("Movies")
+                        .HasForeignKey("RateId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("cinema_core.Models.MovieActor", b =>
