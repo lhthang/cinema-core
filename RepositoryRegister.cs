@@ -18,6 +18,7 @@ namespace cinema_core
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IMovieRepository, MovieRepository>();
             services.AddScoped<IActorRepository, ActorRepository>();
+            services.AddScoped<IRateRepository, RateRepository>();
         }
     }
 }

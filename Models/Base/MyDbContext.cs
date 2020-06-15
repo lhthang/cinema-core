@@ -105,6 +105,12 @@ namespace cinema_core.Models.Base
                 .HasOne(s => s.Actor)
                 .WithMany(ms => ms.MovieActors)
                 .HasForeignKey(s => s.ActorId);
+
+            //Movie-Rate
+            modelBuilder.Entity<Movie>()
+                .HasOne(s => s.Rate)
+                .WithMany(m => m.Movies)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

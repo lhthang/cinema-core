@@ -27,5 +27,7 @@ namespace cinema_core.Models
 
         public virtual ICollection<MovieActor> MovieActors { get; set; }
 
+        public virtual Rate Rate { get; set; }
+
     }
 }

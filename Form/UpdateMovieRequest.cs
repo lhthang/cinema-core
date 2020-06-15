@@ -16,5 +16,6 @@ namespace cinema_core.Form
         public List<string> Wallpapers { get; set; }
         public string Trailer { get; set; }
         public string Story { get; set; }
+        public int RateId { get; set; }
     }
 }
