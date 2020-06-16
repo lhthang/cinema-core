@@ -88,12 +88,20 @@ namespace cinema_core.Repositories.Implements
             return Save();
         }
 
-        public ICollection<MovieDTO> GetAllMovies()
+        public ICollection<MovieDTO> GetAllMovies(string query,int skip,int limit)
         {
             var movies = dbContext.Movies.OrderByDescending(m=>m.ReleasedAt)
                 .Include(r=>r.Rate)
                 .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
                 .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).ToList();
+
+            if (query!=""&& query != null)
+            {
+                movies = movies.Where(m => m.Title.Contains(query) || m.MovieActors.Where(a => a.Actor.Name.Contains(query)).Any()).Skip(skip).Take(limit).ToList();
+            } else
+            {
+                movies = movies.Skip(skip).Take(limit).ToList();
+            }
 
             List<MovieDTO> movieDTOs = new List<MovieDTO>();
             foreach (var movie in movies)

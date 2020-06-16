@@ -14,7 +14,7 @@ namespace cinema_core.Repositories.Interfaces
 
         public ICollection<MovieDTO> GetAllMoviesNowOn();
 
-        public ICollection<MovieDTO> GetAllMovies(); 
+        public ICollection<MovieDTO> GetAllMovies(string query,int skip,int limit); 
         public Movie CreateMovie(MovieRequest movieRequest);
 
         public Movie GetMovieById(int id);
