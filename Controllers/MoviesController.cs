@@ -30,9 +30,14 @@ namespace cinema_core.Controllers
 
         // GET: api/movies/now-on
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(string query = "", int skip =0,int limit =10000)
         {
-            var movie = movieRepository.GetAllMovies();
+            if (limit <= 0)
+            {
+                Error error = new Error() { Message = "Limit must be greater than 0" };
+                return StatusCode(400, error);
+            }
+            var movie = movieRepository.GetAllMovies(query,skip,limit);
             return Ok(movie);
         }
 
