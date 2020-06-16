@@ -1,6 +1,7 @@
 ﻿using cinema_core.Models;
 using cinema_core.Repositories;
 using cinema_core.Utils;
+using cinema_core.Utils.Error;
 using cinema_core.Utils.MovieProxy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -49,8 +50,8 @@ namespace cinema_core.Controllers
 
             if (isExist != null)
             {
-                ModelState.AddModelError("", $"Screen type {screenType.Name} is exist");
-                return StatusCode(400, ModelState);
+                Error error = new Error() { Message = $"Screen type {screenType.Name} is exist" };
+                return StatusCode(400, error);
             }
 
             if (!ModelState.IsValid)
@@ -58,8 +59,8 @@ namespace cinema_core.Controllers
 
             if (!screenTypeRepository.CreateScreenType(screenType))
             {
-                ModelState.AddModelError("", "Something went wrong when save screen type");
-                return StatusCode(400, ModelState);
+                Error error = new Error() { Message = "Something went wrong when save screen type" };
+                return StatusCode(400, error);
             }
             return RedirectToRoute("GetScreenType", new { id = screenType.Id });
         }
@@ -77,8 +78,8 @@ namespace cinema_core.Controllers
 
             if (isDuplicate != null)
             {
-                ModelState.AddModelError("", $"Screen type {screenType.Name} is exist");
-                return StatusCode(400, ModelState);
+                Error error = new Error() { Message = $"Screen type {screenType.Name} is exist" };
+                return StatusCode(400, error);
             }
 
             if (!ModelState.IsValid)
@@ -86,8 +87,8 @@ namespace cinema_core.Controllers
 
             if (!screenTypeRepository.UpdateScreenType(screenType))
             {
-                ModelState.AddModelError("", "Something went wrong when update screen type");
-                return StatusCode(400, ModelState);
+                Error error = new Error() { Message = "Something went wrong when update screen type" };
+                return StatusCode(400, error);
             }
             return RedirectToRoute("GetScreenType", new { id = screenType.Id });
         }
