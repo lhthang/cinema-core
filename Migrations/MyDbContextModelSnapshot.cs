@@ -165,6 +165,7 @@ namespace cinema_core.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -245,6 +246,42 @@ namespace cinema_core.Migrations
                     b.ToTable("ScreenTypes");
                 });
 
+            modelBuilder.Entity("cinema_core.Models.Showtime", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("EndAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ScreenTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("ScreenTypeId");
+
+                    b.ToTable("Showtime");
+                });
+
             modelBuilder.Entity("cinema_core.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -306,6 +343,14 @@ namespace cinema_core.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("cinema_core.Models.Movie", b =>
+                {
+                    b.HasOne("cinema_core.Models.Rate", "Rate")
+                        .WithMany("Movies")
+                        .HasForeignKey("RateId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
             modelBuilder.Entity("cinema_core.Models.MovieActor", b =>
                 {
                     b.HasOne("cinema_core.Models.Actor", "Actor")
@@ -355,6 +400,27 @@ namespace cinema_core.Migrations
 
                     b.HasOne("cinema_core.Models.ScreenType", "ScreenType")
                         .WithMany("RoomScreenTypes")
+                        .HasForeignKey("ScreenTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("cinema_core.Models.Showtime", b =>
+                {
+                    b.HasOne("cinema_core.Models.Movie", "Movie")
+                        .WithMany("Showtimes")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cinema_core.Models.Room", "Room")
+                        .WithMany("Showtimes")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cinema_core.Models.ScreenType", "ScreenType")
+                        .WithMany("Showtimes")
                         .HasForeignKey("ScreenTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
