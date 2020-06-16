@@ -17,15 +17,21 @@ namespace cinema_core.Repositories.Implements
             this.dbContext = context;
         }
 
+        public bool CreateRate(Rate rate)
+        {
+            dbContext.Add(rate);
+            return Save();
+        }
+
         public bool DeleteRate(Rate rate)
         {
             dbContext.Remove(rate);
             return Save();
         }
 
-        public ICollection<RateDTO> GetAllRates()
+        public ICollection<RateDTO> GetAllRates(int skip, int limit)
         {
-            var rates = dbContext.Rates.OrderBy(r => r.Id).ToList();
+            var rates = dbContext.Rates.OrderBy(r => r.Id).Skip(skip).Take(limit).ToList();
             List<RateDTO> rateDTOs = new List<RateDTO>();
             foreach(var rate in rates)
             {
@@ -37,6 +43,12 @@ namespace cinema_core.Repositories.Implements
         public Rate GetRateById(int id)
         {
             var rate = dbContext.Rates.Where(r => r.Id == id).FirstOrDefault();
+            return rate;
+        }
+
+        public Rate GetRateByName(string name)
+        {
+            var rate = dbContext.Rates.Where(r => r.Name == name).FirstOrDefault();
             return rate;
         }
 
