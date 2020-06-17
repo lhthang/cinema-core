@@ -20,7 +20,7 @@ namespace cinema_core.Repositories.Implements
 
         public ICollection<ClusterDTO> GetAllClusters(int skip, int limit)
         {
-            List<ClusterDTO> result = new List<ClusterDTO>();
+            List<ClusterDTO> results = new List<ClusterDTO>();
             List<Cluster> clusters = dbContext.Clusters
                                         .Include(r => r.Rooms)
                                         .Include(cs => cs.ClusterUser).ThenInclude(u => u.User)
@@ -28,9 +28,9 @@ namespace cinema_core.Repositories.Implements
                                         .ToList();
             foreach (Cluster cluster in clusters)
             {
-                result.Add(new ClusterDTO(cluster));
+                results.Add(new ClusterDTO(cluster));
             }
-            return result;
+            return results;
         }
 
         public Cluster GetClusterById(int id)
@@ -76,6 +76,7 @@ namespace cinema_core.Repositories.Implements
                 };
                 dbContext.Add(clusterUser);
             }
+            dbContext.Add(cluster);
             bool isSuccess = Save();
             if (!isSuccess)
             {
@@ -104,6 +105,7 @@ namespace cinema_core.Repositories.Implements
                 };
                 dbContext.Add(clusterUser);
             }
+            dbContext.Update(cluster);
             bool isSuccess = Save();
             if (!isSuccess)
             {

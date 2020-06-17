@@ -24,6 +24,7 @@ namespace cinema_core.Repositories.Implements
         {
             var room = new Room();
             Coppier<RoomRequest, Room>.Copy(roomRequest, room);
+            room.Cluster = dbContext.Clusters.Where(c => c.Id == roomRequest.ClusterId).FirstOrDefault();
             var screenTypes = dbContext.ScreenTypes.Where(s => roomRequest.ScreenTypeIds.Contains(s.Id)).ToList();
             foreach (var screen in screenTypes)
             {
@@ -49,7 +50,10 @@ namespace cinema_core.Repositories.Implements
         public ICollection<RoomDTO> GetAllRooms(int skip,int limit)
         {
             List<RoomDTO> results = new List<RoomDTO>();
-            List<Room> rooms = dbContext.Rooms.Include(rs => rs.RoomScreenTypes).ThenInclude(s => s.ScreenType).OrderBy(r => r.Id).Skip(skip).Take(limit).ToList();
+            List<Room> rooms = dbContext.Rooms
+                                .Include(rs => rs.RoomScreenTypes).ThenInclude(s => s.ScreenType)
+                                .Include(c => c.Cluster)
+                                .OrderBy(r => r.Id).Skip(skip).Take(limit).ToList();
             foreach (Room room in rooms)
             {
                 //System.Diagnostics.Debug.WriteLine();
@@ -60,7 +64,11 @@ namespace cinema_core.Repositories.Implements
 
         public Room GetRoomById(int id)
         {
-            var room = dbContext.Rooms.Where(r => r.Id == id).Include(rs => rs.RoomScreenTypes).ThenInclude(s => s.ScreenType).FirstOrDefault();
+            var room = dbContext.Rooms
+                            .Where(r => r.Id == id)
+                            .Include(rs => rs.RoomScreenTypes).ThenInclude(s => s.ScreenType)
+                            .Include(c => c.Cluster)
+                            .FirstOrDefault();
             return room;
         }
 
@@ -79,6 +87,8 @@ namespace cinema_core.Repositories.Implements
                 dbContext.RemoveRange(screenTypesIsDelete);
 
             Coppier<RoomRequest, Room>.Copy(roomRequest, room);
+
+            room.Cluster = dbContext.Clusters.Where(c => c.Id == roomRequest.ClusterId).FirstOrDefault();
 
             var screenTypes = dbContext.ScreenTypes.Where(s => roomRequest.ScreenTypeIds.Contains(s.Id)).ToList();
             foreach (var screen in screenTypes)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using cinema_core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,5 +11,12 @@ namespace cinema_core.DTOs.ScreenTypeDTOs
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public ScreenTypeDTO() { }
+        public ScreenTypeDTO(ScreenType screenType)
+        {
+            this.Id = screenType.Id;
+            this.Name = screenType.Name;
+        }
     }
 }

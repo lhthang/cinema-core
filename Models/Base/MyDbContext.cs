@@ -33,6 +33,8 @@ namespace cinema_core.Models.Base
         public virtual DbSet<Cluster> Clusters { get; set; }
         public virtual DbSet<ClusterUser> ClusterUsers { get; set; }
 
+        public virtual DbSet<Showtime> Showtime { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -128,6 +130,20 @@ namespace cinema_core.Models.Base
                 .HasOne(s => s.Rate)
                 .WithMany(m => m.Movies)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            //Showtime
+            modelBuilder.Entity<Showtime>()
+                .HasOne(s => s.Movie)
+                .WithMany(m => m.Showtimes)
+                .IsRequired();
+            modelBuilder.Entity<Showtime>()
+                .HasOne(s => s.Room)
+                .WithMany(r => r.Showtimes)
+                .IsRequired();
+            modelBuilder.Entity<Showtime>()
+                .HasOne(s => s.ScreenType)
+                .WithMany(st => st.Showtimes)
+                .IsRequired();
         }
     }
 }
