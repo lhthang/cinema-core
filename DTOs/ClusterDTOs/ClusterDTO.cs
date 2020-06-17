@@ -22,12 +22,15 @@ namespace cinema_core.DTOs.ClusterDTOs
             this.Id = cluster.Id;
             this.Name = cluster.Name;
             this.Address = cluster.Address;
-            this.Manager = new UserDTO()
+            if (cluster.ClusterUser != null)
             {
-                Id = cluster.ClusterUser.User.Id,
-                FullName = cluster.ClusterUser.User.FullName,
-                Username = cluster.ClusterUser.User.Username,
-            };
+                this.Manager = new UserDTO()
+                {
+                    Id = cluster.ClusterUser.User.Id,
+                    FullName = cluster.ClusterUser.User.FullName,
+                    Username = cluster.ClusterUser.User.Username,
+                };
+            }
             List<RoomDTO> roomList = new List<RoomDTO>();
             if (cluster.Rooms != null) {
                 foreach (Room room in cluster.Rooms) {

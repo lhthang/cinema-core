@@ -12,6 +12,7 @@ namespace cinema_core.DTOs.ScreenTypeDTOs
 
         public string Name { get; set; }
 
+        public ScreenTypeDTO() { }
         public ScreenTypeDTO(ScreenType screenType)
         {
             this.Id = screenType.Id;

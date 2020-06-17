@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace cinema_core.Repositories
 {
-    interface IShowtimeRepository
+    public interface IShowtimeRepository
     {
         ICollection<ShowtimeDTO> GetAllShowtimes(int skip, int limit);
         Showtime GetShowtimeById(int id);

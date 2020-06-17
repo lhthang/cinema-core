@@ -76,6 +76,7 @@ namespace cinema_core.Repositories.Implements
                 };
                 dbContext.Add(clusterUser);
             }
+            dbContext.Add(cluster);
             bool isSuccess = Save();
             if (!isSuccess)
             {
@@ -104,6 +105,7 @@ namespace cinema_core.Repositories.Implements
                 };
                 dbContext.Add(clusterUser);
             }
+            dbContext.Update(cluster);
             bool isSuccess = Save();
             if (!isSuccess)
             {

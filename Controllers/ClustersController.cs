@@ -105,7 +105,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Cluster went oopsie when updating" };
                 return StatusCode(400, error);
             }
-            return CreatedAtRoute("GetCluster", new { id = id }, new ClusterDTO(cluster));
+            return CreatedAtRoute("GetCluster", new { id = cluster.Id }, new ClusterDTO(cluster));
         }
 
         // DELETE: api/clusters/5
@@ -142,7 +142,7 @@ namespace cinema_core.Controllers
                 else if (fromCreating && clusterRepository.GetClusterByManagerId(managerId.GetValueOrDefault()) != null)
                 {
                     ModelState.AddModelError("", $"UserId {managerId} is already associated with another cluster");
-                    return StatusCode(404);
+                    return StatusCode(400);
                 }
             }
 
