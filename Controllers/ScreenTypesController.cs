@@ -29,6 +29,32 @@ namespace cinema_core.Controllers
             return Ok(screenTypes);
         }
 
+        // GET: api/screen-types/GetScreenTypesByMovieId/1
+        [HttpGet("[action]/{movieId}", Name = "GetScreenTypesByMovieId")]
+        [AllowAnonymous]
+        public IActionResult GetScreenTypesByMovieId(int movieId)
+        {
+            var screenTypes = screenTypeRepository.GetScreenTypesByMovieId(movieId);
+            if (screenTypes == null)
+            {
+                return NotFound();
+            }
+            return Ok(screenTypes);
+        }
+
+        // GET: api/screen-types/GetScreenTypesByRoomId/1
+        [HttpGet("[action]/{roomId}", Name = "GetScreenTypesByRoomId")]
+        [AllowAnonymous]
+        public IActionResult GetScreenTypesByRoomId(int roomId)
+        {
+            var screenTypes = screenTypeRepository.GetScreenTypesByRoomId(roomId);
+            if (screenTypes == null)
+            {
+                return NotFound();
+            }
+            return Ok(screenTypes);
+        }
+
         // GET: api/screen-types/5
         [HttpGet("{id}", Name = "GetScreenType")]
         [AllowAnonymous]

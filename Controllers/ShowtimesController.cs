@@ -1,6 +1,7 @@
 ﻿using cinema_core.DTOs.ShowtimeDTOs;
 using cinema_core.Form;
 using cinema_core.Repositories;
+using cinema_core.Repositories.Interfaces;
 using cinema_core.Utils.Error;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,10 +16,17 @@ namespace cinema_core.Controllers
     public class ShowtimesController : Controller
     {
         private IShowtimeRepository showtimeRepository;
+        private IMovieRepository movieRepository;
+        private IScreenTypeRepository screenTypeRepository;
+        private IRoomRepository roomRepository;
 
-        public ShowtimesController(IShowtimeRepository showtimeRepository)
+        public ShowtimesController(IShowtimeRepository showtimeRepository, IMovieRepository movieRepository,
+                IScreenTypeRepository screenTypeRepository, IRoomRepository roomRepository)
         {
             this.showtimeRepository = showtimeRepository;
+            this.movieRepository = movieRepository;
+            this.screenTypeRepository = screenTypeRepository;
+            this.roomRepository = roomRepository;
         }
 
         //GET: api/showtimes
@@ -124,14 +132,30 @@ namespace cinema_core.Controllers
         private StatusCodeResult ValidateShowtime(ShowtimeRequest showtimeRequest)
         {
             // TODO: Check showtime.status here
-
-            try 
+            try
             {
+
+                bool isValidRequest = true;
+
+                var movieSupportedScreenTypeIds = screenTypeRepository
+                                                    .GetScreenTypesByMovieId(showtimeRequest.MovieId)
+                                                    .Select(screenTypeDTO => screenTypeDTO.Id).ToList();
+                var roomSupportedScreenTypeIds = screenTypeRepository
+                                                    .GetScreenTypesByRoomId(showtimeRequest.RoomId)
+                                                    .Select(screenTypeDTO => screenTypeDTO.Id).ToList();
+                isValidRequest = isValidRequest && movieSupportedScreenTypeIds.Intersect(roomSupportedScreenTypeIds)
+                                                    .Contains(showtimeRequest.ScreenTypeId);
+
                 DateTime startAt = DateTime.Parse(showtimeRequest.StartAt);
                 DateTime endAt = DateTime.Parse(showtimeRequest.EndAt);
-                if (DateTime.Compare(startAt, endAt) >= 0)
+                DateTime movieEndAt = movieRepository.GetMovieById(showtimeRequest.MovieId).EndAt;
+
+                isValidRequest = isValidRequest && DateTime.Compare(endAt, movieEndAt) <= 0;
+                isValidRequest = isValidRequest && DateTime.Compare(startAt, endAt) < 0;
+
+                if (!isValidRequest)
                 {
-                    ModelState.AddModelError("", "Movie showtime breaks space time continuum");
+                    ModelState.AddModelError("", "Showtime went oopsie");
                     return StatusCode(400);
                 }
             }
