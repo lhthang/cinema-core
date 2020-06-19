@@ -50,8 +50,11 @@ namespace cinema_core.Repositories.Implements
             Showtime showtime = new Showtime();
             showtime.Status = showtimeRequest.Status;
             showtime.StartAt = DateTime.Parse(showtimeRequest.StartAt);
-            showtime.EndAt = DateTime.Parse(showtimeRequest.EndAt);
             showtime.Movie = dbContext.Movies.Where(m => m.Id == showtimeRequest.MovieId).FirstOrDefault();
+            if (showtime.Movie != null)
+            {
+                showtime.EndAt = showtime.StartAt.AddMinutes(showtime.Movie.Runtime);
+            }
             showtime.Room = dbContext.Rooms.Where(r => r.Id == showtimeRequest.RoomId).FirstOrDefault();
             showtime.ScreenType = dbContext.ScreenTypes.Where(st => st.Id == showtimeRequest.ScreenTypeId).FirstOrDefault();
             dbContext.Add(showtime);
@@ -68,8 +71,11 @@ namespace cinema_core.Repositories.Implements
             Showtime showtime = dbContext.Showtime.Where(s => s.Id == id).FirstOrDefault();
             showtime.Status = showtimeRequest.Status;
             showtime.StartAt = DateTime.Parse(showtimeRequest.StartAt);
-            showtime.EndAt = DateTime.Parse(showtimeRequest.EndAt);
             showtime.Movie = dbContext.Movies.Where(m => m.Id == showtimeRequest.MovieId).FirstOrDefault();
+            if (showtime.Movie != null)
+            {
+                showtime.EndAt = showtime.StartAt.AddMinutes(showtime.Movie.Runtime);
+            }
             showtime.Room = dbContext.Rooms.Where(r => r.Id == showtimeRequest.RoomId).FirstOrDefault();
             showtime.ScreenType = dbContext.ScreenTypes.Where(st => st.Id == showtimeRequest.ScreenTypeId).FirstOrDefault();
             dbContext.Update(showtime);
