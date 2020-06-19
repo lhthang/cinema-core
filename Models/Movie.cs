@@ -29,6 +29,8 @@ namespace cinema_core.Models
 
         public virtual Rate Rate { get; set; }
 
+        public virtual ICollection<MovieGenre> MovieGenres { get; set; }
+
         public virtual ICollection<Showtime> Showtimes { get; set; }
 
     }
