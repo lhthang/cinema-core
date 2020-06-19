@@ -37,6 +37,7 @@ namespace cinema_core.Migrations
                     b.ToTable("Actors");
                 });
 
+            modelBuilder.Entity("cinema_core.Models.Genre", b =>
             modelBuilder.Entity("cinema_core.Models.Cluster", b =>
                 {
                     b.Property<int>("Id")
@@ -44,6 +45,7 @@ namespace cinema_core.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Description")
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
@@ -52,6 +54,7 @@ namespace cinema_core.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("Genres");
                     b.ToTable("Clusters");
                 });
 
@@ -137,6 +140,26 @@ namespace cinema_core.Migrations
                     b.HasIndex("ActorId");
 
                     b.ToTable("MovieActors");
+                });
+
+            modelBuilder.Entity("cinema_core.Models.MovieGenre", b =>
+                {
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.HasKey("MovieId", "GenreId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("MovieGenre");
                 });
 
             modelBuilder.Entity("cinema_core.Models.MovieScreenType", b =>
@@ -361,6 +384,21 @@ namespace cinema_core.Migrations
 
                     b.HasOne("cinema_core.Models.Movie", "Movie")
                         .WithMany("MovieActors")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("cinema_core.Models.MovieGenre", b =>
+                {
+                    b.HasOne("cinema_core.Models.Genre", "Genre")
+                        .WithMany("MovieGenres")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("cinema_core.Models.Movie", "Movie")
+                        .WithMany("MovieGenres")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
