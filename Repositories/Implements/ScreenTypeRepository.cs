@@ -1,6 +1,7 @@
 ﻿using cinema_core.DTOs.ScreenTypeDTOs;
 using cinema_core.Models;
 using cinema_core.Models.Base;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,44 @@ namespace cinema_core.Repositories.Implements
                     Id = screenType.Id,
                     Name = screenType.Name,
                 });
+            }
+            return results;
+        }
+
+        public ICollection<ScreenTypeDTO> GetScreenTypesByMovieId(int movieId)
+        {
+            List<ScreenTypeDTO> results = new List<ScreenTypeDTO>();
+            var movieScreenTypes = dbContext.MovieScreenTypes
+                                    .Where(mst => mst.MovieId == movieId)
+                                    .Include(mst => mst.ScreenType)
+                                    .OrderBy(mst => mst.ScreenTypeId)
+                                    .ToList();
+            foreach (MovieScreenType movieScreenType in movieScreenTypes)
+            {
+                results.Add(new ScreenTypeDTO()
+                {
+                    Id = movieScreenType.ScreenTypeId,
+                    Name = movieScreenType.ScreenType.Name
+                }); ;
+            }
+            return results;
+        }
+
+        public ICollection<ScreenTypeDTO> GetScreenTypesByRoomId(int roomId)
+        {
+            List<ScreenTypeDTO> results = new List<ScreenTypeDTO>();
+            var roomScreenTypes = dbContext.RoomScreenTypes
+                                    .Where(rst => rst.RoomId == roomId)
+                                    .Include(rst => rst.ScreenType)
+                                    .OrderBy(rst => rst.ScreenTypeId)
+                                    .ToList();
+            foreach (RoomScreenType roomScreenType in roomScreenTypes)
+            {
+                results.Add(new ScreenTypeDTO()
+                {
+                    Id = roomScreenType.ScreenTypeId,
+                    Name = roomScreenType.ScreenType.Name
+                }); ;
             }
             return results;
         }

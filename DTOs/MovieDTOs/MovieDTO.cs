@@ -1,4 +1,5 @@
-﻿using cinema_core.DTOs.ScreenTypeDTOs;
+﻿using cinema_core.DTOs.RateDTOs;
+using cinema_core.DTOs.ScreenTypeDTOs;
 using cinema_core.Models;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,8 @@ namespace cinema_core.DTOs.MovieDTOs
         public DateTime ReleasedAt { get; set; }
         public DateTime EndAt { get; set; }
         public string Trailer { get; set; }
-        public List<ScreenTypeDTO> ScreenTypes;
+        public List<ScreenTypeDTO> ScreenTypes { get; set; }
+        public RateDTO Rate { get; set; }
 
         public MovieDTO(Movie movie)
         {
@@ -69,6 +71,8 @@ namespace cinema_core.DTOs.MovieDTOs
                 }
             }
             this.Actors = actors;
+            if (movie.Rate!=null)
+                this.Rate = new RateDTO(movie.Rate);
         }
     }
 }

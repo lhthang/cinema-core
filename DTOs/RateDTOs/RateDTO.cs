@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace cinema_core.DTOs.ScreenTypeDTOs
+namespace cinema_core.DTOs.RateDTOs
 {
-    public class ScreenTypeDTO
+    public class RateDTO
     {
         public int Id { get; set; }
-
         public string Name { get; set; }
 
-        public ScreenTypeDTO() { }
-        public ScreenTypeDTO(ScreenType screenType)
+        public int MinAge { get; set; }
+        public RateDTO(Rate rate)
         {
-            this.Id = screenType.Id;
-            this.Name = screenType.Name;
+            Id = rate.Id;
+            Name = rate.Name;
+            MinAge = rate.MinAge;
         }
     }
 }

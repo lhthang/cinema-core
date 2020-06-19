@@ -1,6 +1,7 @@
 ﻿using cinema_core.Models;
 using cinema_core.Repositories;
 using cinema_core.Utils;
+using cinema_core.Utils.Error;
 using cinema_core.Utils.MovieProxy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -28,6 +29,32 @@ namespace cinema_core.Controllers
             return Ok(screenTypes);
         }
 
+        // GET: api/screen-types/GetScreenTypesByMovieId/1
+        [HttpGet("[action]/{movieId}", Name = "GetScreenTypesByMovieId")]
+        [AllowAnonymous]
+        public IActionResult GetScreenTypesByMovieId(int movieId)
+        {
+            var screenTypes = screenTypeRepository.GetScreenTypesByMovieId(movieId);
+            if (screenTypes == null)
+            {
+                return NotFound();
+            }
+            return Ok(screenTypes);
+        }
+
+        // GET: api/screen-types/GetScreenTypesByRoomId/1
+        [HttpGet("[action]/{roomId}", Name = "GetScreenTypesByRoomId")]
+        [AllowAnonymous]
+        public IActionResult GetScreenTypesByRoomId(int roomId)
+        {
+            var screenTypes = screenTypeRepository.GetScreenTypesByRoomId(roomId);
+            if (screenTypes == null)
+            {
+                return NotFound();
+            }
+            return Ok(screenTypes);
+        }
+
         // GET: api/screen-types/5
         [HttpGet("{id}", Name = "GetScreenType")]
         [AllowAnonymous]
@@ -49,8 +76,8 @@ namespace cinema_core.Controllers
 
             if (isExist != null)
             {
-                ModelState.AddModelError("", $"Screen type {screenType.Name} is exist");
-                return StatusCode(400, ModelState);
+                Error error = new Error() { Message = $"Screen type {screenType.Name} is exist" };
+                return StatusCode(400, error);
             }
 
             if (!ModelState.IsValid)
@@ -58,8 +85,8 @@ namespace cinema_core.Controllers
 
             if (!screenTypeRepository.CreateScreenType(screenType))
             {
-                ModelState.AddModelError("", "Something went wrong when save screen type");
-                return StatusCode(400, ModelState);
+                Error error = new Error() { Message = "Something went wrong when save screen type" };
+                return StatusCode(400, error);
             }
             return RedirectToRoute("GetScreenType", new { id = screenType.Id });
         }
@@ -77,8 +104,8 @@ namespace cinema_core.Controllers
 
             if (isDuplicate != null)
             {
-                ModelState.AddModelError("", $"Screen type {screenType.Name} is exist");
-                return StatusCode(400, ModelState);
+                Error error = new Error() { Message = $"Screen type {screenType.Name} is exist" };
+                return StatusCode(400, error);
             }
 
             if (!ModelState.IsValid)
@@ -86,8 +113,8 @@ namespace cinema_core.Controllers
 
             if (!screenTypeRepository.UpdateScreenType(screenType))
             {
-                ModelState.AddModelError("", "Something went wrong when update screen type");
-                return StatusCode(400, ModelState);
+                Error error = new Error() { Message = "Something went wrong when update screen type" };
+                return StatusCode(400, error);
             }
             return RedirectToRoute("GetScreenType", new { id = screenType.Id });
         }

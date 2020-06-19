@@ -31,6 +31,11 @@ namespace cinema_core.Models.Base
         public virtual DbSet<UserRole> UserRole { get; set; }
         public virtual DbSet<Genre> Genres { get; set; }
 
+        public virtual DbSet<Cluster> Clusters { get; set; }
+        public virtual DbSet<ClusterUser> ClusterUsers { get; set; }
+
+        public virtual DbSet<Showtime> Showtime { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -120,6 +125,39 @@ namespace cinema_core.Models.Base
                 .HasOne(s => s.Genre)
                 .WithMany(ms => ms.MovieGenres)
                 .HasForeignKey(s => s.GenreId);
+            //Cluster-User (0..1 to 0..1)
+            modelBuilder.Entity<ClusterUser>()
+                .HasKey(cu => new { cu.ClusterId, cu.UserId });
+            modelBuilder.Entity<ClusterUser>()
+                .HasIndex(cu => cu.ClusterId).IsUnique();
+            modelBuilder.Entity<ClusterUser>()
+                .HasIndex(cu => cu.UserId).IsUnique();
+
+            //Cluster-Room (1 to n)
+            modelBuilder.Entity<Cluster>()
+                .HasMany(c => c.Rooms)
+                .WithOne(r => r.Cluster)
+                .HasForeignKey(r => r.ClusterId);
+                
+            //Movie-Rate
+            modelBuilder.Entity<Movie>()
+                .HasOne(s => s.Rate)
+                .WithMany(m => m.Movies)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            //Showtime
+            modelBuilder.Entity<Showtime>()
+                .HasOne(s => s.Movie)
+                .WithMany(m => m.Showtimes)
+                .IsRequired();
+            modelBuilder.Entity<Showtime>()
+                .HasOne(s => s.Room)
+                .WithMany(r => r.Showtimes)
+                .IsRequired();
+            modelBuilder.Entity<Showtime>()
+                .HasOne(s => s.ScreenType)
+                .WithMany(st => st.Showtimes)
+                .IsRequired();
         }
     }
 }

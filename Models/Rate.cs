@@ -10,10 +10,12 @@ namespace cinema_core.Models
 {
     public class Rate : BaseEntity
     {
-
+        [Required]
         public string Name { get; set; }
-
+        [Required]
         public int MinAge { get; set; }
+
+        public virtual ICollection<Movie> Movies { get; set; }
 
     }
 }

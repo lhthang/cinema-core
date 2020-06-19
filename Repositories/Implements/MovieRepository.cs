@@ -3,6 +3,7 @@ using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
 using cinema_core.Repositories.Interfaces;
+using cinema_core.Utils;
 using cinema_core.Utils.MovieProxy;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,18 +26,13 @@ namespace cinema_core.Repositories.Implements
             MovieResponse response = MovieProxy.GetMovieByIMDB(movieRequest.Imdb);
             var movie = new Movie()
             {
-                Title = response.Title,
-                Country = response.Country,
-                Languages = response.Languages.ToArray(),
-                Runtime = response.Runtime,
-                Directors = response.Directors.ToArray(),
-                ReleasedAt = response.ReleasedAt,
-                Poster = response.Poster,
                 EndAt = DateTime.Parse(movieRequest.EndAt),
-                Wallpapers = movieRequest.Wallpapers.ToArray(),
-                Trailer = movieRequest.Trailer,
-                Story = movieRequest.Story,
             };
+            Coppier<MovieResponse, Movie>.Copy(response, movie);
+            Coppier<MovieRequest, Movie>.Copy(movieRequest, movie);
+
+            var rate = dbContext.Rates.Where(r => movieRequest.RateId==r.Id).FirstOrDefault();
+            movie.Rate = rate;
 
             var screenTypes = dbContext.ScreenTypes.Where(s => movieRequest.ScreenTypeIds.Contains(s.Id)).ToList();
 
@@ -86,11 +82,56 @@ namespace cinema_core.Repositories.Implements
             return movie;
         }
 
+        public bool DeleteMovie(Movie movie)
+        {
+            dbContext.Remove(movie);
+            return Save();
+        }
+
+        public ICollection<MovieDTO> GetAllMovies(string query,int skip,int limit)
+        {
+            var movies = dbContext.Movies.OrderByDescending(m=>m.ReleasedAt)
+                .Include(r=>r.Rate)
+                .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
+                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).ToList();
+
+            if (query!=""&& query != null)
+            {
+                movies = movies.Where(m => m.Title.Contains(query) || m.MovieActors.Where(a => a.Actor.Name.Contains(query)).Any()).Skip(skip).Take(limit).ToList();
+            } else
+            {
+                movies = movies.Skip(skip).Take(limit).ToList();
+            }
+
+            List<MovieDTO> movieDTOs = new List<MovieDTO>();
+            foreach (var movie in movies)
+            {
+                movieDTOs.Add(new MovieDTO(movie));
+            }
+            return movieDTOs;
+        }
+
+        public ICollection<MovieDTO> GetAllMoviesComing(int day)
+        {
+            var movies = dbContext.Movies.Where(m => DateTime.Compare(m.ReleasedAt, DateTime.Now) >=0 && DateTime.Compare(m.ReleasedAt, DateTime.Now.AddDays(day)) <= 0)
+                .Include(r => r.Rate)
+                .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
+                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).OrderBy(m => m.ReleasedAt).ToList();
+
+            List<MovieDTO> movieDTOs = new List<MovieDTO>();
+            foreach (var movie in movies)
+            {
+                movieDTOs.Add(new MovieDTO(movie));
+            }
+            return movieDTOs;
+        }
+
         public ICollection<MovieDTO> GetAllMoviesNowOn()
         {
             var movies = dbContext.Movies.Where(m => DateTime.Compare(m.ReleasedAt, DateTime.Now) <= 0 && DateTime.Compare(m.EndAt, DateTime.Now) >= 0)
+                .Include(r => r.Rate)
                 .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
-                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).ToList();
+                .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).OrderBy(m => m.ReleasedAt).ToList();
 
             List<MovieDTO> movieDTOs = new List<MovieDTO>();
             foreach (var movie in movies)
@@ -102,7 +143,9 @@ namespace cinema_core.Repositories.Implements
 
         public Movie GetMovieById(int id)
         {
-            var movie = dbContext.Movies.Where(m => m.Id == id).Include(ms =>  ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
+            var movie = dbContext.Movies.Where(m => m.Id == id)
+                .Include(r=>r.Rate)
+                .Include(ms =>  ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
                 .Include(ma=>ma.MovieActors).ThenInclude(a=>a.Actor).FirstOrDefault();
             return movie;
         }
@@ -110,6 +153,37 @@ namespace cinema_core.Repositories.Implements
         public bool Save()
         {
             return dbContext.SaveChanges() > 0;
+        }
+
+        public Movie UpdateMovie(int id, UpdateMovieRequest movieRequest)
+        {
+            var movie = dbContext.Movies.Where(m => m.Id == id).FirstOrDefault();
+            movie.EndAt = DateTime.Parse(movieRequest.EndAt);
+            Coppier<UpdateMovieRequest, Movie>.Copy(movieRequest, movie);
+
+            var rate = dbContext.Rates.Where(r => movieRequest.RateId == r.Id).FirstOrDefault();
+            movie.Rate = rate;
+
+            var screenTypeToDelete = dbContext.MovieScreenTypes.Where(ms => ms.MovieId == id).ToList();
+            if (screenTypeToDelete != null)
+                dbContext.RemoveRange(screenTypeToDelete);
+
+            var screenTypes = dbContext.ScreenTypes.Where(s => movieRequest.ScreenTypeIds.Contains(s.Id)).ToList();
+
+            foreach (var screenType in screenTypes)
+            {
+                var movieScreenType = new MovieScreenType()
+                {
+                    Movie = movie,
+                    ScreenType = screenType,
+                };
+                dbContext.Add(movieScreenType);
+            }
+
+            dbContext.Update(movie);
+            var isSuccess = Save();
+            if (!isSuccess) return null;
+            return movie;
         }
     }
 }

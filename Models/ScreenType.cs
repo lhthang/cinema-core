@@ -16,5 +16,6 @@ namespace cinema_core.Models
         public virtual ICollection<RoomScreenType> RoomScreenTypes { get; set; }
 
         public virtual ICollection<MovieScreenType> MovieScreenTypes { get; set; }
+        public virtual ICollection<Showtime> Showtimes { get; set; }
     }
 }

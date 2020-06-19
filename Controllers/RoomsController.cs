@@ -74,7 +74,7 @@ namespace cinema_core.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id,[FromBody] RoomRequest roomRequest)
         {
-            //if (roomRepository.GetRoomById(id) == null) return NotFound();
+            if (roomRepository.GetRoomById(id) == null) return NotFound();
 
             if (roomRequest == null) return StatusCode(400, ModelState);
 
