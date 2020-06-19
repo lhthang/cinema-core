@@ -3,11 +3,13 @@ using cinema_core.Form;
 using cinema_core.Repositories;
 using cinema_core.Repositories.Interfaces;
 using cinema_core.Utils.Error;
+using cinema_core.Utils.Constants;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using cinema_core.Models;
 
 namespace cinema_core.Controllers
 {
@@ -131,31 +133,52 @@ namespace cinema_core.Controllers
 
         private StatusCodeResult ValidateShowtime(ShowtimeRequest showtimeRequest)
         {
-            // TODO: Check showtime.status here
             try
             {
 
-                bool isValidRequest = true;
+                bool validFlag;
 
+                // Check Status
+                validFlag = showtimeRequest.Status == Constants.SHOWTIME_STATUS_ACTIVE 
+                                    || showtimeRequest.Status == Constants.SHOWTIME_STATUS_INACTIVE ;
+                if (!validFlag)
+                {
+                    ModelState.AddModelError("", $"Status not valid, can only be {Constants.SHOWTIME_STATUS_ACTIVE} "
+                            + $"or {Constants.SHOWTIME_STATUS_INACTIVE}");
+                    return StatusCode(400);
+                }
+
+                // Check RoomId, ScreenTypeId and MovieId valid
                 var movieSupportedScreenTypeIds = screenTypeRepository
                                                     .GetScreenTypesByMovieId(showtimeRequest.MovieId)
                                                     .Select(screenTypeDTO => screenTypeDTO.Id).ToList();
                 var roomSupportedScreenTypeIds = screenTypeRepository
                                                     .GetScreenTypesByRoomId(showtimeRequest.RoomId)
                                                     .Select(screenTypeDTO => screenTypeDTO.Id).ToList();
-                isValidRequest = isValidRequest && movieSupportedScreenTypeIds.Intersect(roomSupportedScreenTypeIds)
+                validFlag = movieSupportedScreenTypeIds.Intersect(roomSupportedScreenTypeIds)
                                                     .Contains(showtimeRequest.ScreenTypeId);
-
-                DateTime startAt = DateTime.Parse(showtimeRequest.StartAt);
-                DateTime endAt = DateTime.Parse(showtimeRequest.EndAt);
-                DateTime movieEndAt = movieRepository.GetMovieById(showtimeRequest.MovieId).EndAt;
-
-                isValidRequest = isValidRequest && DateTime.Compare(endAt, movieEndAt) <= 0;
-                isValidRequest = isValidRequest && DateTime.Compare(startAt, endAt) < 0;
-
-                if (!isValidRequest)
+                if (!validFlag)
                 {
-                    ModelState.AddModelError("", "Showtime went oopsie");
+                    ModelState.AddModelError("", "Unsupported ScreenType for Room or Movie");
+                    return StatusCode(400);
+                }
+
+                // Check end at
+                DateTime startAt = DateTime.Parse(showtimeRequest.StartAt);
+                Movie movie = movieRepository.GetMovieById(showtimeRequest.MovieId);
+                DateTime endAt = startAt.AddMinutes(movie.Runtime);
+                DateTime movieEndAt = movie.EndAt;
+                validFlag = DateTime.Compare(endAt, movieEndAt) <= 0;
+                if (!validFlag)
+                {
+                    ModelState.AddModelError("", "Showtime breaks space time continuum");
+                    return StatusCode(400);
+                }
+                DateTime now = DateTime.Now;
+                validFlag = DateTime.Compare(now, endAt) <= 0;
+                if (!validFlag)
+                {
+                    ModelState.AddModelError("", "Need a time machine to see this movie");
                     return StatusCode(400);
                 }
             }
