@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using cinema_core.DTOs.RateDTOs;
+using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Repositories.Interfaces;
 using cinema_core.Utils.Error;
@@ -16,68 +17,89 @@ namespace cinema_core.Controllers
     public class RatesController : Controller
     {
         private IRateRepository rateRepository;
+
         public RatesController(IRateRepository repository)
         {
             rateRepository = repository;
         }
 
-        [HttpGet()]
-        [AllowAnonymous]
-        public IActionResult Get(int skip = 0,int limit=10000)
+        // GET: api/rates
+        [HttpGet]
+        public IActionResult Get()
         {
-            if (limit <= 0)
-            {
-                Error error = new Error() { Message = "Limit must be greater than 0" };
-                return StatusCode(400, error);
-            }
-            var rates = rateRepository.GetAllRates(skip,limit);
+            var rates = rateRepository.GetRates();
             return Ok(rates);
         }
 
+        // GET: api/rates/5
         [HttpGet("{id}", Name = "GetRate")]
         [AllowAnonymous]
         public IActionResult Get(int id)
         {
-            var rate = rateRepository.GetRateById(id);
-            if (rate == null)
-                return NotFound();
-            return Ok(new RateDTO(rate));
+            try
+            {
+                var rate = rateRepository.GetRateById(id);
+                return Ok(rate);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
+        // POST: api/rates
+        [HttpPost]
+        public IActionResult Post([FromBody] RateRequest rateRequest)
+        {
+            if (rateRequest == null)
+                return StatusCode(400, ModelState);
+            if (!ModelState.IsValid)
+                return StatusCode(400, ModelState);
+
+            try
+            {
+                var rate = rateRepository.CreateRate(rateRequest);
+                return Ok(rate);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
+        }
+
+        // PUT: api/rates/5
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] RateRequest rateRequest)
+        {
+            if (rateRequest == null)
+                return StatusCode(400, ModelState);
+            if (!ModelState.IsValid)
+                return StatusCode(400, ModelState);
+
+            try
+            {
+                var rate = rateRepository.UpdateRate(id, rateRequest);
+                return Ok(rate);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
+        }
+
+        // DELETE: api/rates/5
         [HttpDelete("{id}")]
-        [AllowAnonymous]
         public IActionResult Delete(int id)
         {
-            var rate = rateRepository.GetRateById(id);
-            if (rate == null)
-                return NotFound();
-            if (!rateRepository.DeleteRate(rate))
+            try
             {
-                Error error = new Error() { Message = "Something went wrong when delete rate" };
-                return StatusCode(400, error);
+                var isDeleted = rateRepository.DeleteRate(id);
+                return Ok(isDeleted);
             }
-            return Ok(new RateDTO(rate));
-        }
-
-        [HttpPost()]
-        [AllowAnonymous]
-        public IActionResult Post([FromBody] Rate rate)
-        {
-            var isExist = rateRepository.GetRateByName(rate.Name);
-            if (isExist != null)
+            catch (Exception e)
             {
-                Error error = new Error() { Message = $"Rate {rate.Name} is exist" };
-                return StatusCode(400, error);
+                return StatusCode(400, e.Message);
             }
-
-            if (!ModelState.IsValid) return StatusCode(400, ModelState);
-
-            if (!rateRepository.CreateRate(rate))
-            {
-                Error error = new Error() { Message = "Something went wrong when save rate" };
-                return StatusCode(400, error);
-            }
-            return RedirectToRoute("GetRate",new { id = rate.Id });
         }
     }
 }
