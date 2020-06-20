@@ -19,6 +19,9 @@ namespace cinema_core.DTOs.ClusterDTOs
         public ClusterDTO() { }
 
         public ClusterDTO(Cluster cluster) {
+            if (cluster == null)
+                return;
+
             this.Id = cluster.Id;
             this.Name = cluster.Name;
             this.Address = cluster.Address;

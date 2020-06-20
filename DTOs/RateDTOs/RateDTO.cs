@@ -14,6 +14,9 @@ namespace cinema_core.DTOs.RateDTOs
         public int MinAge { get; set; }
         public RateDTO(Rate rate)
         {
+            if (rate == null)
+                return;
+
             Id = rate.Id;
             Name = rate.Name;
             MinAge = rate.MinAge;

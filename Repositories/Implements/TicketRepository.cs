@@ -98,16 +98,16 @@ namespace cinema_core.Repositories.Implements
             // XYY with:    X: an alphabet letter;    Y: a digit
             // Valid: A01, A1, B00, B99. Invalid: AB01, A100
             var seatRegex = new Regex(@"^[A-Z]\d{1,2}$");
-            if (seatRegex.IsMatch(seatStr))
+            if (!seatRegex.IsMatch(seatStr))
                 throw new Exception("Wrong seat format.");
 
             int alphabetPart = Convert.ToInt32(seatStr[0]); // ASCII
             int digitPart = int.Parse(seatStr.Substring(1));
 
-            if (alphabetPart < 65 && alphabetPart > 65 + showtime.Room.TotalRows - 1)
+            if (alphabetPart < 65 || alphabetPart > 64 + showtime.Room.TotalRows)
                 throw new Exception("Invalid row of Seat.");
 
-            if (digitPart < 1 && digitPart > showtime.Room.TotalSeatsPerRow)
+            if (digitPart < 1 || digitPart > showtime.Room.TotalSeatsPerRow)
                 throw new Exception("Invalid column of Seat.");
 
             var ticketsOfShowtime = dbContext.Tickets.Where(x => x.ShowtimeId == ticketRequest.ShowtimeId);

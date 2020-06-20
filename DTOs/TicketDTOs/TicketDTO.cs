@@ -19,6 +19,10 @@ namespace cinema_core.DTOs.TicketDTOs
 
         public TicketDTO(Ticket ticket)
         {
+            if (ticket == null)
+                return;
+
+            Id = ticket.Id;
             Username = ticket.Username;
             Showtime = new ShowtimeDTO(ticket.Showtime);
             Seat = ticket.Seat;
