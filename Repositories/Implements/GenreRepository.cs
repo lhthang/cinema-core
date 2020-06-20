@@ -56,6 +56,8 @@ namespace cinema_core.Repositories.Implements
             var genre = dbContext.Genres.Where(r => r.Id == id).FirstOrDefault();
             if (genre == null)
                 return null;
+
+            genre.Name = genreRequest.Name;
             genre.Description = genreRequest.Description;
 
             dbContext.Update(genre);
