@@ -2,6 +2,7 @@
 using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
+using cinema_core.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,25 +11,14 @@ using System.Threading.Tasks;
 
 namespace cinema_core.Repositories.Implements
 {
-    public class ScreenTypeRepository : IScreenTypeRepository
+    public class ScreenTypeRepository : BaseRepository, IScreenTypeRepository
     {
-        private MyDbContext dbContext;
+        public ScreenTypeRepository(MyDbContext context) : base(context) { }
 
-        public ScreenTypeRepository(MyDbContext context)
+        public ScreenTypeDTO GetScreenTypeById(int id)
         {
-            dbContext = context;
-        }
-
-        public ScreenType GetScreenTypeById(int Id)
-        {
-            var screenType = dbContext.ScreenTypes.Where(sc => sc.Id == Id).FirstOrDefault();
-            return screenType;
-        }
-
-        public ScreenType GetScreenTypeByName(string name)
-        {
-            var screenType = dbContext.ScreenTypes.Where(sc => sc.Name == name).FirstOrDefault();
-            return screenType;
+            var screenType = GetScreenTypeEntityById(id);
+            return new ScreenTypeDTO(screenType);
         }
 
         public ICollection<ScreenTypeDTO> GetScreenTypes()
@@ -84,47 +74,55 @@ namespace cinema_core.Repositories.Implements
             return results;
         }
 
-        private bool Save()
-        {
-            var save = dbContext.SaveChanges();
-            return save > 0;
-        }
-
         public ScreenTypeDTO CreateScreenType(ScreenTypeRequest screenTypeRequest)
         {
+            CheckNameDupplicate(screenTypeRequest.Name);
+
             var screenType = new ScreenType()
             {
                 Name = screenTypeRequest.Name,
             };
 
             dbContext.Add(screenType);
-            var isSuccess = Save();
-            if (!isSuccess) return null;
+            Save();
             return new ScreenTypeDTO(screenType);
         }
 
         public ScreenTypeDTO UpdateScreenType(int id, ScreenTypeRequest screenTypeRequest)
         {
-            var screenType = dbContext.ScreenTypes.Where(r => r.Id == id).FirstOrDefault();
-            if (screenType == null)
-                return null;
+            var screenType = GetScreenTypeEntityById(id);
+            CheckNameDupplicate(screenTypeRequest.Name);
 
             screenType.Name = screenTypeRequest.Name;
 
             dbContext.Update(screenType);
-            var isSuccess = Save();
-            if (!isSuccess) return null;
+            Save();
             return new ScreenTypeDTO(screenType);
         }
 
         public bool DeleteScreenType(int id)
         {
-            var screenTypeToDelete = dbContext.ScreenTypes.FirstOrDefault(x => x.Id == id);
-            if (screenTypeToDelete == null)
-                return false;
+            var screenTypeToDelete = GetScreenTypeEntityById(id);
 
             dbContext.Remove(screenTypeToDelete);
-            return Save();
+            Save();
+            return true;
+        }
+
+        private ScreenType GetScreenTypeEntityById(int id)
+        {
+            var screenType = dbContext.ScreenTypes.Where(r => r.Id == id).FirstOrDefault();
+            if (screenType == null)
+                throw new Exception("Id not found.");
+
+            return screenType;
+        }
+
+        private void CheckNameDupplicate(string name)
+        {
+            var screenTypeByName = dbContext.ScreenTypes.Where(sc => sc.Name == name).FirstOrDefault();
+            if (screenTypeByName != null)
+                throw new Exception($"Screen Type {name} already existed.");
         }
     }
 }
