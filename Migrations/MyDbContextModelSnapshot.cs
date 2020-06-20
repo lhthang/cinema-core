@@ -322,7 +322,7 @@ namespace cinema_core.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Seat")

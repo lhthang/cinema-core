@@ -2,27 +2,21 @@
 using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
+using cinema_core.Repositories.Base;
 using cinema_core.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace cinema_core.Repositories.Implements
 {
-    public class TicketRepository : ITicketRepository
+    public class TicketRepository : BaseRepository, ITicketRepository
     {
-        private MyDbContext dbContext;
-
-        public TicketRepository(MyDbContext context)
+        public TicketRepository(MyDbContext context) : base(context)
         {
-            dbContext = context;
-        }
-
-        private bool Save()
-        {
-            return dbContext.SaveChanges() > 0;
         }
 
         public ICollection<TicketDTO> GetAllTicketsByShowtime(int showtimeId)
@@ -33,18 +27,15 @@ namespace cinema_core.Repositories.Implements
 
         public TicketDTO GetTicketById(int id)
         {
-            var ticket = dbContext.Tickets.Include(x => x.Showtime).FirstOrDefault(x => x.Id == id);
+            var ticket = GetTicketEntityById(id);
             return new TicketDTO(ticket);
         }
 
         public TicketDTO BuyTicket(TicketRequest ticketRequest)
         {
-            var ticketBySeat = dbContext.Tickets.FirstOrDefault(x => x.ShowtimeId == ticketRequest.ShowtimeId && x.Seat == ticketRequest.Seat);
-            if (ticketBySeat != null)
-            {
-                // TODO: Throw message "Seat already occupied"
-                return null;
-            }
+            ticketRequest.Seat = ticketRequest.Seat.ToUpper();
+
+            CheckTicketValid(ticketRequest);
 
             var ticket = new Ticket()
             {
@@ -52,43 +43,86 @@ namespace cinema_core.Repositories.Implements
                 ShowtimeId = ticketRequest.ShowtimeId,
                 TicketType = ticketRequest.TicketType,
                 Seat = ticketRequest.Seat,
-                CreatedAt = DateTime.Now,
+                ModifiedAt = DateTime.Now,
             };
 
             dbContext.Add(ticket);
-            var isSuccess = Save();
-            if (!isSuccess) return null;
+            Save();
             return new TicketDTO(ticket);
         }
 
-        //public TicketDTO UpdateTicket(int id, TicketRequest ticketRequest)
-        //{
-        //    var ticket = dbContext.Tickets.Where(r => r.Id == id).FirstOrDefault();
-        //    if (ticket == null)
-        //        return null;
-        //    ticket.Username = ticketRequest.Username;
+        public TicketDTO UpdateTicket(int id, TicketRequest ticketRequest)
+        {
+            ticketRequest.Seat = ticketRequest.Seat.ToUpper();
 
-        //    dbContext.Update(ticket);
-        //    var isSuccess = Save();
-        //    if (!isSuccess) return null;
-        //    return new TicketDTO(ticket);
+            CheckTicketValid(ticketRequest);
 
-        //}
+            var ticket = GetTicketEntityById(id);
+
+            ticket.Username = ticketRequest.Username;
+            ticket.ShowtimeId = ticketRequest.ShowtimeId;
+            ticket.TicketType = ticketRequest.TicketType;
+            ticket.Seat = ticketRequest.Seat;
+            ticket.ModifiedAt = DateTime.Now;
+
+            dbContext.Update(ticket);
+            Save();
+            return new TicketDTO(ticket);
+
+        }
 
         public bool DeleteTicket(int id)
         {
-            var ticketToDelete = dbContext.Tickets.FirstOrDefault(x => x.Id == id);
-            if (ticketToDelete == null)
-                return false;
-
+            var ticketToDelete = GetTicketEntityById(id);
             dbContext.Remove(ticketToDelete);
-            return Save();
+            Save();
+            return true;
         }
 
-        //public TicketDTO GetTicketByName(string name)
-        //{
-        //    var ticket = dbContext.Tickets.Where(g => g.Name == name).FirstOrDefault();
-        //    return new TicketDTO(ticket);
-        //}
+        private Ticket GetTicketEntityById(int id)
+        {
+            var ticket = dbContext.Tickets.Where(r => r.Id == id).FirstOrDefault();
+            if (ticket == null)
+                throw new Exception("Id not found.");
+
+            return ticket;
+        }
+
+        private void CheckTicketValid(TicketRequest ticketRequest)
+        {
+            var showtime = dbContext.Showtime.Include(x => x.Room).FirstOrDefault(x => x.Id == ticketRequest.ShowtimeId);
+            if (showtime == null)
+                throw new Exception("Cannot find Showtime.");
+
+            string seatStr = ticketRequest.Seat;
+            // XYY with:    X: an alphabet letter;    Y: a digit
+            // Valid: A01, A1, B00, B99. Invalid: AB01, A100
+            var seatRegex = new Regex(@"^[A-Z]\d{1,2}$");
+            if (seatRegex.IsMatch(seatStr))
+                throw new Exception("Wrong seat format.");
+
+            int alphabetPart = Convert.ToInt32(seatStr[0]); // ASCII
+            int digitPart = int.Parse(seatStr.Substring(1));
+
+            if (alphabetPart < 65 && alphabetPart > 65 + showtime.Room.TotalRows - 1)
+                throw new Exception("Invalid row of Seat.");
+
+            if (digitPart < 1 && digitPart > showtime.Room.TotalSeatsPerRow)
+                throw new Exception("Invalid column of Seat.");
+
+            var ticketsOfShowtime = dbContext.Tickets.Where(x => x.ShowtimeId == ticketRequest.ShowtimeId);
+            foreach (var ticketOfShowtime in ticketsOfShowtime)
+			{
+                int alphabet = Convert.ToInt32(ticketOfShowtime.Seat[0]);
+                int digit = int.Parse(ticketOfShowtime.Seat.Substring(1));
+
+                if (alphabetPart == alphabet && digitPart == digit)
+                    throw new Exception("Seat already occupied.");
+            }
+
+            //var ticketBySeat = dbContext.Tickets.FirstOrDefault(x => x.ShowtimeId == ticketRequest.ShowtimeId && x.Seat == ticketRequest.Seat);
+            //if (ticketBySeat != null)
+            //    throw new Exception("Seat already occupied");
+        }
     }
 }

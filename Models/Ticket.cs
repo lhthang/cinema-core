@@ -14,6 +14,6 @@ namespace cinema_core.Models
         public virtual Showtime Showtime { get; set; }
         public string Seat { get; set; }
         public TicketType TicketType { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime ModifiedAt { get; set; }
     }
 }

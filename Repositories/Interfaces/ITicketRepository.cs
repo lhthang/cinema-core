@@ -12,6 +12,7 @@ namespace cinema_core.Repositories.Interfaces
         public ICollection<TicketDTO> GetAllTicketsByShowtime(int showtimeId);
         public TicketDTO GetTicketById(int id);
         public TicketDTO BuyTicket(TicketRequest ticketRequest);
+        public TicketDTO UpdateTicket(int id, TicketRequest ticketRequest);
         public bool DeleteTicket(int id);
     }
 }
