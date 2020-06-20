@@ -24,6 +24,9 @@ namespace cinema_core.DTOs.RoomDTOs
 
         public RoomDTO(Room room)
         {
+            if (room == null)
+                return;
+
             List<ScreenTypeDTO> list = new List<ScreenTypeDTO>();
             this.Id = room.Id;
             this.Name = room.Name;

@@ -21,6 +21,9 @@ namespace cinema_core.DTOs.ShowtimeDTOs
 
         public ShowtimeDTO(Showtime showtime)
         {
+            if (showtime == null)
+                return;
+
             this.Id = showtime.Id;
             this.Status = showtime.Status;
             this.StartAt = showtime.StartAt;

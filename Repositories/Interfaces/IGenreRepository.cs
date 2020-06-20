@@ -12,7 +12,7 @@ namespace cinema_core.Repositories.Interfaces
     {
         public ICollection<GenreDTO> GetAllGenres(int skip, int limit);
         public GenreDTO GetGenreById(int id);
-        public Genre GetGenreByName(string name);
+        public GenreDTO GetGenreByName(string name);
         public GenreDTO CreateGenre(GenreRequest genreRequest);
         public GenreDTO UpdateGenre(int id, GenreRequest genreRequest);
         public bool DeleteGenre(int id);

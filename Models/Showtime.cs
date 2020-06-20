@@ -17,6 +17,7 @@ namespace cinema_core.Models
         public Room Room { get; set; }
         public int ScreenTypeId { get; set; }
         public ScreenType ScreenType { get; set; }
+        public virtual ICollection<Ticket> Tickets { get; set; }
 
     }
 }

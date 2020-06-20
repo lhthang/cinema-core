@@ -77,10 +77,10 @@ namespace cinema_core.Repositories.Implements
             return Save();
         }
 
-        public Genre GetGenreByName(string name)
+        public GenreDTO GetGenreByName(string name)
         {
             var genre = dbContext.Genres.Where(g => g.Name == name).FirstOrDefault();
-            return genre;
+            return new GenreDTO(genre);
         }
     }
 }

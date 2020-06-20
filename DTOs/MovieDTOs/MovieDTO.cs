@@ -32,6 +32,9 @@ namespace cinema_core.DTOs.MovieDTOs
 
         public MovieDTO(Movie movie)
         {
+            if (movie == null)
+                return;
+
             this.Id = movie.Id;
             this.Country = movie.Country;
             this.Title = movie.Title;

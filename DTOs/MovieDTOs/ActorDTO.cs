@@ -15,6 +15,9 @@ namespace cinema_core.DTOs.MovieDTOs
         public ActorDTO() { }
         public ActorDTO(Actor actor)
         {
+            if (actor == null)
+                return;
+
             this.Id = actor.Id;
             this.Name = actor.Name;
             this.Avatar = actor.Avatar;
