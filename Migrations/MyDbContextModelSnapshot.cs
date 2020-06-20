@@ -37,7 +37,6 @@ namespace cinema_core.Migrations
                     b.ToTable("Actors");
                 });
 
-            modelBuilder.Entity("cinema_core.Models.Genre", b =>
             modelBuilder.Entity("cinema_core.Models.Cluster", b =>
                 {
                     b.Property<int>("Id")
@@ -45,7 +44,6 @@ namespace cinema_core.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description")
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
@@ -54,7 +52,6 @@ namespace cinema_core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
                     b.ToTable("Clusters");
                 });
 
@@ -75,6 +72,24 @@ namespace cinema_core.Migrations
                         .IsUnique();
 
                     b.ToTable("ClusterUsers");
+                });
+
+            modelBuilder.Entity("cinema_core.Models.Genre", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("cinema_core.Models.Movie", b =>
@@ -150,16 +165,11 @@ namespace cinema_core.Migrations
                     b.Property<int>("GenreId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.HasKey("MovieId", "GenreId");
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("MovieGenre");
+                    b.ToTable("MovieGenres");
                 });
 
             modelBuilder.Entity("cinema_core.Models.MovieScreenType", b =>
