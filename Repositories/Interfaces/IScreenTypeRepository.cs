@@ -13,10 +13,7 @@ namespace cinema_core.Repositories
         ICollection<ScreenTypeDTO> GetScreenTypes();
         ICollection<ScreenTypeDTO> GetScreenTypesByMovieId(int movieId);
         ICollection<ScreenTypeDTO> GetScreenTypesByRoomId(int roomId);
-        ScreenType GetScreenTypeById(int Id);
-
-        ScreenType GetScreenTypeByName(string name);
-
+        ScreenTypeDTO GetScreenTypeById(int Id);
         ScreenTypeDTO CreateScreenType(ScreenTypeRequest screenTypeRequest);
         ScreenTypeDTO UpdateScreenType(int id, ScreenTypeRequest screenTypeRequest);
         bool DeleteScreenType(int id);
