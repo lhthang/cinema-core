@@ -87,7 +87,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Something went wrong when save genre" };
                 return StatusCode(400, error);
             }
-            return RedirectToRoute("GetGenre", new { id = genre.Id });
+            return Ok(genre);
         }
 
         // DELETE: api/genre/5

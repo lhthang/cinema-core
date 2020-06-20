@@ -110,7 +110,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Showtime went oopsie when updating" };
                 return StatusCode(400, error);
             }
-            return RedirectToRoute("GetShowtime", new { id = showtime.Id });
+            return Ok(new ShowtimeDTO(showtime));
         }
 
         // DELETE: api/showtimes/5
