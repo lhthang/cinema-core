@@ -67,7 +67,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Something went wrong when save room" };
                 return StatusCode(400, error);
             }
-            return CreatedAtRoute("GetRoom", new { id = room.Id }, new RoomDTO(room));
+            return RedirectToRoute("GetRoom", new { id = room.Id });
         }
 
         // POST: api/rooms
@@ -89,7 +89,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Something went wrong when save room" };
                 return StatusCode(400, error);
             }
-            return CreatedAtRoute("GetRoom", new { id = id }, new RoomDTO(room));
+            return Ok(new RoomDTO(room));
         }
 
         // DELETE: api/room/5
