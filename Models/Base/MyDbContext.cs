@@ -35,6 +35,7 @@ namespace cinema_core.Models.Base
         public virtual DbSet<ClusterUser> ClusterUsers { get; set; }
 
         public virtual DbSet<Showtime> Showtime { get; set; }
+        public virtual DbSet<Ticket> Tickets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -159,6 +160,19 @@ namespace cinema_core.Models.Base
                 .HasOne(s => s.ScreenType)
                 .WithMany(st => st.Showtimes)
                 .IsRequired();
+            modelBuilder.Entity<Showtime>()
+                .HasOne(s => s.ScreenType)
+                .WithMany(st => st.Showtimes)
+                .IsRequired();
+            modelBuilder.Entity<Showtime>()
+                .HasMany(s => s.Tickets)
+                .WithOne(t => t.Showtime);
+
+            //Ticket
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Showtime)
+                .WithMany(s => s.Tickets)
+                .HasForeignKey(t => t.ShowtimeId);
         }
     }
 }

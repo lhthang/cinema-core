@@ -315,6 +315,35 @@ namespace cinema_core.Migrations
                     b.ToTable("Showtime");
                 });
 
+            modelBuilder.Entity("cinema_core.Models.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Seat")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ShowtimeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TicketType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShowtimeId");
+
+                    b.ToTable("Tickets");
+                });
+
             modelBuilder.Entity("cinema_core.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -470,6 +499,15 @@ namespace cinema_core.Migrations
                     b.HasOne("cinema_core.Models.ScreenType", "ScreenType")
                         .WithMany("Showtimes")
                         .HasForeignKey("ScreenTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("cinema_core.Models.Ticket", b =>
+                {
+                    b.HasOne("cinema_core.Models.Showtime", "Showtime")
+                        .WithMany("Tickets")
+                        .HasForeignKey("ShowtimeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
