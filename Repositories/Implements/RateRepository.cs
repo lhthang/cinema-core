@@ -1,6 +1,8 @@
 ﻿using cinema_core.DTOs.RateDTOs;
+using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
+using cinema_core.Repositories.Base;
 using cinema_core.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,52 +11,74 @@ using System.Threading.Tasks;
 
 namespace cinema_core.Repositories.Implements
 {
-    public class RateRepository : IRateRepository
+    public class RateRepository : BaseRepository, IRateRepository
     {
-        private MyDbContext dbContext;
-        public RateRepository(MyDbContext context)
+        public RateRepository(MyDbContext context) : base(context) { }
+
+        public RateDTO GetRateById(int id)
         {
-            this.dbContext = context;
+            var rate = GetRateEntityById(id);
+            return new RateDTO(rate);
         }
 
-        public bool CreateRate(Rate rate)
+        public ICollection<RateDTO> GetRates()
         {
-            dbContext.Add(rate);
-            return Save();
-        }
-
-        public bool DeleteRate(Rate rate)
-        {
-            dbContext.Remove(rate);
-            return Save();
-        }
-
-        public ICollection<RateDTO> GetAllRates(int skip, int limit)
-        {
-            var rates = dbContext.Rates.OrderBy(r => r.Id).Skip(skip).Take(limit).ToList();
-            List<RateDTO> rateDTOs = new List<RateDTO>();
-            foreach(var rate in rates)
+            List<RateDTO> results = new List<RateDTO>();
+            var rates = dbContext.Rates.OrderBy(sc => sc.Id).ToList();
+            foreach (Rate rate in rates)
             {
-                rateDTOs.Add(new RateDTO(rate));
+                results.Add(new RateDTO(rate));
             }
-            return rateDTOs;
+            return results;
         }
 
-        public Rate GetRateById(int id)
+        public RateDTO CreateRate(RateRequest rateRequest)
+        {
+            CheckRateValid(rateRequest);
+            var rate = new Rate()
+            {
+                Name = rateRequest.Name,
+            };
+
+            dbContext.Add(rate);
+            Save();
+            return new RateDTO(rate);
+        }
+
+        public RateDTO UpdateRate(int id, RateRequest rateRequest)
+        {
+            CheckRateValid(rateRequest);
+            var rate = GetRateEntityById(id);
+
+            rate.Name = rateRequest.Name;
+
+            dbContext.Update(rate);
+            Save();
+            return new RateDTO(rate);
+        }
+
+        public bool DeleteRate(int id)
+        {
+            var rateToDelete = GetRateEntityById(id);
+
+            dbContext.Remove(rateToDelete);
+            Save();
+            return true;
+        }
+
+        private Rate GetRateEntityById(int id)
         {
             var rate = dbContext.Rates.Where(r => r.Id == id).FirstOrDefault();
+            if (rate == null)
+                throw new Exception("Id not found.");
+
             return rate;
         }
 
-        public Rate GetRateByName(string name)
-        {
-            var rate = dbContext.Rates.Where(r => r.Name == name).FirstOrDefault();
-            return rate;
-        }
-
-        public bool Save()
-        {
-            return dbContext.SaveChanges() > 0;
-        }
+        private void CheckRateValid(RateRequest rateRequest)
+		{
+            if (rateRequest.MinAge < 0 || rateRequest.MinAge > 99)
+                throw new Exception("Rate must be between 0 and 99");
+		}
     }
 }
