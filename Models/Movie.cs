@@ -8,7 +8,6 @@ namespace cinema_core.Models
 {
     public class Movie : BaseEntity
     {
-
         public string[] Directors { get; set; }
 
         public string[] Languages { get; set; }

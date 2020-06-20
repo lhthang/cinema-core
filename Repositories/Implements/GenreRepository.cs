@@ -56,8 +56,6 @@ namespace cinema_core.Repositories.Implements
             var genre = dbContext.Genres.Where(r => r.Id == id).FirstOrDefault();
             if (genre == null)
                 return null;
-
-            genre.Name = genreRequest.Name;
             genre.Description = genreRequest.Description;
 
             dbContext.Update(genre);
@@ -75,6 +73,12 @@ namespace cinema_core.Repositories.Implements
 
             dbContext.Remove(genreToDelete);
             return Save();
+        }
+
+        public Genre GetGenreByName(string name)
+        {
+            var genre = dbContext.Genres.Where(g => g.Name == name).FirstOrDefault();
+            return genre;
         }
     }
 }

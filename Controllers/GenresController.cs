@@ -67,7 +67,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Something went wrong when save genre" };
                 return StatusCode(400, error);
             }
-            return CreatedAtRoute("GetGenre", new { id = genre.Id }, genre);
+            return RedirectToRoute("GetGenre", new { id = genre.Id });
         }
 
         // POST: api/genres
@@ -87,7 +87,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Something went wrong when save genre" };
                 return StatusCode(400, error);
             }
-            return CreatedAtRoute("GetGenre", new { id = id }, genre);
+            return RedirectToRoute("GetGenre", new { id = genre.Id });
         }
 
         // DELETE: api/genre/5

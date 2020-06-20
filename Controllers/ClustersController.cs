@@ -75,7 +75,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Cluster went oopsie when creating" };
                 return StatusCode(400, error);
             }
-            return CreatedAtRoute("GetCluster", new { id = cluster.Id }, new ClusterDTO(cluster));
+            return RedirectToRoute("GetCluster", new { id = cluster.Id });
         }
 
         // POST: api/clusters
@@ -105,7 +105,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Cluster went oopsie when updating" };
                 return StatusCode(400, error);
             }
-            return CreatedAtRoute("GetCluster", new { id = cluster.Id }, new ClusterDTO(cluster));
+            return RedirectToRoute("GetCluster", new { id = cluster.Id });
         }
 
         // DELETE: api/clusters/5

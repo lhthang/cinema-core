@@ -80,7 +80,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Showtime went oopsie when creating" };
                 return StatusCode(400, error);
             }
-            return CreatedAtRoute("GetShowtime", new { id = showtime.Id }, new ShowtimeDTO(showtime));
+            return RedirectToRoute("GetShowtime", new { id = showtime.Id });
         }
 
         // POST: api/showtimes
@@ -110,7 +110,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Showtime went oopsie when updating" };
                 return StatusCode(400, error);
             }
-            return CreatedAtRoute("GetShowtime", new { id = showtime.Id }, new ShowtimeDTO(showtime));
+            return RedirectToRoute("GetShowtime", new { id = showtime.Id });
         }
 
         // DELETE: api/showtimes/5

@@ -44,7 +44,6 @@ namespace cinema_core.Repositories.Implements
 
             var actors = dbContext.Actors.Where(a => actorNames.Contains(a.Name)).ToList();
 
-            //var isNot = movieRequest.Actors.Where(a => !actors.Any(a2=>a2.Name==a.Name)).ToList();
 
             var isNotExistActors = response.Actors.Where(a => !actors.Any(a2 => a2.Name == a.Name)).ToList();
             
@@ -53,6 +52,26 @@ namespace cinema_core.Repositories.Implements
                 foreach (var actor in isNotExistActors)
                 {
                     dbContext.Add(actor);
+                }
+            }
+
+            //genre
+            List<string> genreNames = new List<string>();
+            foreach (var genre in response.Genres)
+            {
+                genreNames.Add(genre.Name);
+            }
+
+            var genres = dbContext.Genres.Where(a => genreNames.Contains(a.Name)).ToList();
+
+
+            var isNotExistGenres = response.Genres.Where(a => !genres.Any(a2 => a2.Name == a.Name)).ToList();
+
+            if (isNotExistGenres != null)
+            {
+                foreach (var genre in isNotExistGenres)
+                {
+                    dbContext.Add(genre);
                 }
             }
 
@@ -74,6 +93,16 @@ namespace cinema_core.Repositories.Implements
                     Actor = actor,
                 };
                 dbContext.Add(movieActor);
+            }
+
+            foreach (var genre in genres.Concat(isNotExistGenres))
+            {
+                var movieGenre = new MovieGenre()
+                {
+                    Movie = movie,
+                    Genre = genre,
+                };
+                dbContext.Add(movieGenre);
             }
 
             dbContext.Add(movie);
@@ -116,6 +145,7 @@ namespace cinema_core.Repositories.Implements
             var movies = dbContext.Movies.Where(m => DateTime.Compare(m.ReleasedAt, DateTime.Now) >=0 && DateTime.Compare(m.ReleasedAt, DateTime.Now.AddDays(day)) <= 0)
                 .Include(r => r.Rate)
                 .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
+                .Include(mg => mg.MovieGenres).ThenInclude(g => g.Genre)
                 .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).OrderBy(m => m.ReleasedAt).ToList();
 
             List<MovieDTO> movieDTOs = new List<MovieDTO>();
@@ -131,6 +161,7 @@ namespace cinema_core.Repositories.Implements
             var movies = dbContext.Movies.Where(m => DateTime.Compare(m.ReleasedAt, DateTime.Now) <= 0 && DateTime.Compare(m.EndAt, DateTime.Now) >= 0)
                 .Include(r => r.Rate)
                 .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
+                .Include(mg => mg.MovieGenres).ThenInclude(g => g.Genre)
                 .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).OrderBy(m => m.ReleasedAt).ToList();
 
             List<MovieDTO> movieDTOs = new List<MovieDTO>();
@@ -146,6 +177,7 @@ namespace cinema_core.Repositories.Implements
             var movie = dbContext.Movies.Where(m => m.Id == id)
                 .Include(r=>r.Rate)
                 .Include(ms =>  ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
+                .Include(mg => mg.MovieGenres).ThenInclude(g => g.Genre)
                 .Include(ma=>ma.MovieActors).ThenInclude(a=>a.Actor).FirstOrDefault();
             return movie;
         }
@@ -164,20 +196,42 @@ namespace cinema_core.Repositories.Implements
             var rate = dbContext.Rates.Where(r => movieRequest.RateId == r.Id).FirstOrDefault();
             movie.Rate = rate;
 
-            var screenTypeToDelete = dbContext.MovieScreenTypes.Where(ms => ms.MovieId == id).ToList();
-            if (screenTypeToDelete != null)
-                dbContext.RemoveRange(screenTypeToDelete);
-
-            var screenTypes = dbContext.ScreenTypes.Where(s => movieRequest.ScreenTypeIds.Contains(s.Id)).ToList();
-
-            foreach (var screenType in screenTypes)
+            if (movieRequest.ScreenTypeIds != null)
             {
-                var movieScreenType = new MovieScreenType()
+                var screenTypeToDelete = dbContext.MovieScreenTypes.Where(ms => ms.MovieId == id).ToList();
+                if (screenTypeToDelete != null)
+                    dbContext.RemoveRange(screenTypeToDelete);
+
+                var screenTypes = dbContext.ScreenTypes.Where(s => movieRequest.ScreenTypeIds.Contains(s.Id)).ToList();
+
+                foreach (var screenType in screenTypes)
                 {
-                    Movie = movie,
-                    ScreenType = screenType,
-                };
-                dbContext.Add(movieScreenType);
+                    var movieScreenType = new MovieScreenType()
+                    {
+                        Movie = movie,
+                        ScreenType = screenType,
+                    };
+                    dbContext.Add(movieScreenType);
+                }
+            }
+
+            if (movieRequest.GenreIds != null)
+            {
+                var genreToDelete = dbContext.MovieGenres.Where(ms => ms.MovieId == id).ToList();
+                if (genreToDelete != null)
+                    dbContext.RemoveRange(genreToDelete);
+
+                var genres = dbContext.Genres.Where(g => movieRequest.GenreIds.Contains(g.Id)).ToList();
+
+                foreach (var genre in genres)
+                {
+                    var movieGenre = new MovieGenre()
+                    {
+                        Movie = movie,
+                        Genre = genre,
+                    };
+                    dbContext.Add(movieGenre);
+                }
             }
 
             dbContext.Update(movie);
