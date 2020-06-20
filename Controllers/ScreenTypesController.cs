@@ -121,8 +121,8 @@ namespace cinema_core.Controllers
                 return StatusCode(400, error);
             }
 
-            return Ok(screenType);
-            //return RedirectToRoute("GetScreenType", new { id = screenType.Id });
+            //return Ok(screenType);
+            return RedirectToRoute("GetScreenType", new { id = screenType.Id });
         }
 
         // DELETE: api/screen-types/5

@@ -105,7 +105,7 @@ namespace cinema_core.Controllers
                 var error = new Error() { Message = "Cluster went oopsie when updating" };
                 return StatusCode(400, error);
             }
-            return RedirectToRoute("GetCluster", new { id = cluster.Id });
+            return Ok(new ClusterDTO(cluster));
         }
 
         // DELETE: api/clusters/5

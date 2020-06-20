@@ -62,7 +62,7 @@ namespace cinema_core.Controllers
                 ModelState.AddModelError("", "Something went wrong when update actor");
                 return StatusCode(400, ModelState);
             }
-            return RedirectToRoute("GetActor", new { id = updatedActor.Id });
+            return Ok(new ActorDTO(actor));
         }
     }
 }
