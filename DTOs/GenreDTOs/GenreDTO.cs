@@ -1,4 +1,5 @@
-﻿using cinema_core.Models;
+﻿using cinema_core.Form;
+using cinema_core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
