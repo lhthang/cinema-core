@@ -22,7 +22,7 @@ namespace cinema_core.Models.Base
 
         public virtual DbSet<Movie> Movies { get; set; }
         public virtual DbSet<MovieScreenType> MovieScreenTypes { get; set; }
-        
+        public virtual DbSet<MovieGenre> MovieGenres { get; set; }
         public virtual DbSet<Actor> Actors { get; set; }
         public virtual DbSet<MovieActor> MovieActors { get; set; }
 
@@ -125,6 +125,7 @@ namespace cinema_core.Models.Base
                 .HasOne(s => s.Genre)
                 .WithMany(ms => ms.MovieGenres)
                 .HasForeignKey(s => s.GenreId);
+
             //Cluster-User (0..1 to 0..1)
             modelBuilder.Entity<ClusterUser>()
                 .HasKey(cu => new { cu.ClusterId, cu.UserId });

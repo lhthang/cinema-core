@@ -20,12 +20,15 @@ namespace cinema_core.Controllers
         private IMovieRepository movieRepository;
         private IScreenTypeRepository screenTypeRepository;
         private IRateRepository rateRepository;
+        private IGenreRepository genreRepository;
 
-        public MoviesController(IMovieRepository repository,IScreenTypeRepository screenTypeRepository, IRateRepository rateRepository)
+        public MoviesController(IMovieRepository repository,IScreenTypeRepository screenTypeRepository, 
+            IRateRepository rateRepository,IGenreRepository genreRepository)
         {
             this.screenTypeRepository = screenTypeRepository;
             this.movieRepository = repository;
             this.rateRepository = rateRepository;
+            this.genreRepository = genreRepository;
         }
 
         // GET: api/movies/now-on
@@ -144,6 +147,7 @@ namespace cinema_core.Controllers
                     return StatusCode(404);
                 }
             }
+
             if (rateRepository.GetRateById(movieRequest.RateId) == null)
             {
                 ModelState.AddModelError("", $"Rate id {movieRequest.RateId} not found");
@@ -164,6 +168,19 @@ namespace cinema_core.Controllers
                     return StatusCode(404);
                 }
             }
+
+            if (movieRequest.GenreIds != null)
+            {
+                foreach (var id in movieRequest.GenreIds)
+                {
+                    if (genreRepository.GetGenreById(id) == null)
+                    {
+                        ModelState.AddModelError("", $"Genre {id} not found");
+                        return StatusCode(404);
+                    }
+                }
+            }
+
             if (rateRepository.GetRateById(movieRequest.RateId) == null)
             {
                 ModelState.AddModelError("", $"Rate id {movieRequest.RateId} not found");

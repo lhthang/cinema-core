@@ -8,7 +8,6 @@ namespace cinema_core.Models
 {
     public class Movie : BaseEntity
     {
-
         public string[] Directors { get; set; }
 
         public string[] Languages { get; set; }
@@ -29,8 +28,6 @@ namespace cinema_core.Models
         public virtual ICollection<MovieGenre> MovieGenres { get; set; }
 
         public virtual Rate Rate { get; set; }
-
-        public virtual ICollection<MovieGenre> MovieGenres { get; set; }
 
         public virtual ICollection<Showtime> Showtimes { get; set; }
 

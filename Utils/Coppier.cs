@@ -19,7 +19,8 @@ namespace cinema_core.Utils
                 {
                     if (parentProperty.Name == childProperty.Name && parentProperty.PropertyType == childProperty.PropertyType)
                     {
-                        childProperty.SetValue(dest, parentProperty.GetValue(source));
+                        if (parentProperty.GetValue(source)!=null)
+                            childProperty.SetValue(dest, parentProperty.GetValue(source));
                         break;
                     }
                 }

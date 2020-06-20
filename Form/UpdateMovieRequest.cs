@@ -11,6 +11,7 @@ namespace cinema_core.Form
         public string Title { get; set; }
 
         public List<int> ScreenTypeIds { get; set; }
+        public List<int> GenreIds { get; set; }
         public string Poster { get; set; }
         public string EndAt { get; set; }
         public string[] Wallpapers { get; set; }
