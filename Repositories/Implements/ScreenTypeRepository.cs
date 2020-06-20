@@ -1,4 +1,5 @@
 ﻿using cinema_core.DTOs.ScreenTypeDTOs;
+using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
 using Microsoft.EntityFrameworkCore;
@@ -16,18 +17,6 @@ namespace cinema_core.Repositories.Implements
         public ScreenTypeRepository(MyDbContext context)
         {
             dbContext = context;
-        }
-
-        public bool CreateScreenType(ScreenType screenType)
-        {
-            dbContext.AddAsync(screenType);
-            return Save();
-        }
-
-        public bool DeleteScreenType(ScreenType screenType)
-        {
-            dbContext.Remove(screenType);
-            return Save();
         }
 
         public ScreenType GetScreenTypeById(int Id)
@@ -95,15 +84,46 @@ namespace cinema_core.Repositories.Implements
             return results;
         }
 
-        public bool Save()
+        private bool Save()
         {
             var save = dbContext.SaveChanges();
             return save > 0;
         }
 
-        public bool UpdateScreenType(ScreenType screenType)
+        public ScreenTypeDTO CreateScreenType(ScreenTypeRequest screenTypeRequest)
         {
+            var screenType = new ScreenType()
+            {
+                Name = screenTypeRequest.Name,
+            };
+
+            dbContext.Add(screenType);
+            var isSuccess = Save();
+            if (!isSuccess) return null;
+            return new ScreenTypeDTO(screenType);
+        }
+
+        public ScreenTypeDTO UpdateScreenType(int id, ScreenTypeRequest screenTypeRequest)
+        {
+            var screenType = dbContext.ScreenTypes.Where(r => r.Id == id).FirstOrDefault();
+            if (screenType == null)
+                return null;
+
+            screenType.Name = screenTypeRequest.Name;
+
             dbContext.Update(screenType);
+            var isSuccess = Save();
+            if (!isSuccess) return null;
+            return new ScreenTypeDTO(screenType);
+        }
+
+        public bool DeleteScreenType(int id)
+        {
+            var screenTypeToDelete = dbContext.ScreenTypes.FirstOrDefault(x => x.Id == id);
+            if (screenTypeToDelete == null)
+                return false;
+
+            dbContext.Remove(screenTypeToDelete);
             return Save();
         }
     }

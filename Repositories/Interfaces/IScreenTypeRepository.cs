@@ -1,4 +1,5 @@
 ﻿using cinema_core.DTOs.ScreenTypeDTOs;
+using cinema_core.Form;
 using cinema_core.Models;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,8 @@ namespace cinema_core.Repositories
 
         ScreenType GetScreenTypeByName(string name);
 
-        bool CreateScreenType(ScreenType screenType);
-        bool UpdateScreenType(ScreenType screenType);
-        bool DeleteScreenType(ScreenType screenType);
-        bool Save();
+        ScreenTypeDTO CreateScreenType(ScreenTypeRequest screenTypeRequest);
+        ScreenTypeDTO UpdateScreenType(int id, ScreenTypeRequest screenTypeRequest);
+        bool DeleteScreenType(int id);
     }
 }
