@@ -27,11 +27,7 @@ namespace cinema_core.Repositories.Implements
             var screenTypes = dbContext.ScreenTypes.OrderBy(sc => sc.Id).ToList();
             foreach (ScreenType screenType in screenTypes)
             {
-                results.Add(new ScreenTypeDTO()
-                {
-                    Id = screenType.Id,
-                    Name = screenType.Name,
-                });
+                results.Add(new ScreenTypeDTO(screenType));
             }
             return results;
         }
