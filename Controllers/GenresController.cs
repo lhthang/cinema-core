@@ -20,96 +20,90 @@ namespace cinema_core.Controllers
         {
             genreRepository = repository;
         }
+
         // GET: api/genres
         [HttpGet]
         public IActionResult Get(int skip = 0, int limit = 100000)
         {
-            if (limit <= 0)
+            try
             {
-                var error = new Error() { Message = "Limit must be greater than 0" };
-                return StatusCode(400, error);
+                var genres = genreRepository.GetAllGenres(skip, limit);
+                return Ok(genres);
             }
-            var genres = genreRepository.GetAllGenres(skip, limit);
-            return Ok(genres);
-        }
-
-        private IActionResult StatusCode(int v, Error error)
-        {
-            throw new Exception(error.Message);
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
         // GET: api/genres/5
         [HttpGet("{id}", Name = "GetGenre")]
         public IActionResult Get(int id)
         {
-            var genre = genreRepository.GetGenreById(id);
-            if (genre == null)
-                return NotFound();
-
-            return Ok(genre);
+            try
+            {
+                var genre = genreRepository.GetGenreById(id);
+                return Ok(genre);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
         // POST: api/genres
         [HttpPost]
         public IActionResult Post([FromBody] GenreRequest genreRequest)
         {
-            if (genreRequest == null) return StatusCode(400, ModelState);
-
-            var statusCode = ValidateGenre(genreRequest);
-
-
+            if (genreRequest == null)
+                return StatusCode(400, ModelState);
             if (!ModelState.IsValid)
-                return StatusCode(statusCode.StatusCode);
+                return StatusCode(400, ModelState);
 
-            var genre = genreRepository.CreateGenre(genreRequest);
-            if (genre == null)
+            try
             {
-                var error = new Error() { Message = "Something went wrong when save genre" };
-                return StatusCode(400, error);
+                var genre = genreRepository.CreateGenre(genreRequest);
+                return Ok(genre);
             }
-            return RedirectToRoute("GetGenre", new { id = genre.Id });
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
-        // POST: api/genres
+        // PUT: api/genres/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] GenreRequest genreRequest)
         {
-            if (genreRequest == null) return StatusCode(400, ModelState);
-
-            var statusCode = ValidateGenre(genreRequest);
-
+            if (genreRequest == null)
+                return StatusCode(400, ModelState);
             if (!ModelState.IsValid)
-                return StatusCode(statusCode.StatusCode);
+                return StatusCode(400, ModelState);
 
-            var genre = genreRepository.UpdateGenre(id, genreRequest);
-            if (genre == null)
+            try
             {
-                var error = new Error() { Message = "Something went wrong when save genre" };
-                return StatusCode(400, error);
+                var genre = genreRepository.UpdateGenre(id, genreRequest);
+                return Ok(genre);
             }
-            return Ok(genre);
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
-        // DELETE: api/genre/5
+        // DELETE: api/genres/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            //var isExist = genreRepository.GetGenreById(id);
-            //if (isExist == null) return NotFound();
-
-            if (!genreRepository.DeleteGenre(id))
+            try
             {
-                var error = new Error() { Message = "Something went wrong when delete genre" };
-                return StatusCode(400, error);
+                var isDeleted = genreRepository.DeleteGenre(id);
+                return Ok(isDeleted);
             }
-            return Ok(id);
-        }
-
-        private StatusCodeResult ValidateGenre(GenreRequest genreRequest)
-        {
-            if (genreRequest == null || !ModelState.IsValid) return BadRequest();
-
-            return NoContent();
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
     }
 }

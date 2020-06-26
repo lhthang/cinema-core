@@ -25,10 +25,17 @@ namespace cinema_core.Controllers
 
         // GET: api/rates
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(int skip = 0, int limit = 100000)
         {
-            var rates = rateRepository.GetRates();
-            return Ok(rates);
+            try
+            {
+                var rates = rateRepository.GetRates(skip, limit);
+                return Ok(rates);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
         // GET: api/rates/5

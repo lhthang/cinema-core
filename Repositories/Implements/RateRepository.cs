@@ -4,6 +4,7 @@ using cinema_core.Models;
 using cinema_core.Models.Base;
 using cinema_core.Repositories.Base;
 using cinema_core.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,8 @@ namespace cinema_core.Repositories.Implements
 {
     public class RateRepository : BaseRepository, IRateRepository
     {
-        public RateRepository(MyDbContext context) : base(context) { }
+        public RateRepository(MyDbContext context) : base(context) {
+        }
 
         public RateDTO GetRateById(int id)
         {
@@ -21,10 +23,10 @@ namespace cinema_core.Repositories.Implements
             return new RateDTO(rate);
         }
 
-        public ICollection<RateDTO> GetRates()
+        public ICollection<RateDTO> GetRates(int skip, int limit)
         {
             List<RateDTO> results = new List<RateDTO>();
-            var rates = dbContext.Rates.OrderBy(sc => sc.Id).ToList();
+            var rates = dbContext.Rates.OrderBy(sc => sc.Id).Skip(skip).Take(limit).ToList();
             foreach (Rate rate in rates)
             {
                 results.Add(new RateDTO(rate));
@@ -38,6 +40,7 @@ namespace cinema_core.Repositories.Implements
             var rate = new Rate()
             {
                 Name = rateRequest.Name,
+                MinAge = rateRequest.MinAge,
             };
 
             dbContext.Add(rate);
@@ -51,6 +54,7 @@ namespace cinema_core.Repositories.Implements
             var rate = GetRateEntityById(id);
 
             rate.Name = rateRequest.Name;
+            rate.MinAge = rateRequest.MinAge;
 
             dbContext.Update(rate);
             Save();

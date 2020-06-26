@@ -24,8 +24,15 @@ namespace cinema_core.Controllers
         [HttpGet("[action]/{showtimeId}")]
         public IActionResult GetByShowtime(int showtimeId)
         {
-            var tickets = ticketRepository.GetAllTicketsByShowtime(showtimeId);
-            return Ok(tickets);
+            try
+            {
+                var tickets = ticketRepository.GetAllTicketsByShowtime(showtimeId);
+                return Ok(tickets);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
         // GET: api/tickets/5

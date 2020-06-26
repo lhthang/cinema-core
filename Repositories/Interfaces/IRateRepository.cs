@@ -10,7 +10,7 @@ namespace cinema_core.Repositories.Interfaces
 {
     public interface IRateRepository
     {
-        ICollection<RateDTO> GetRates();
+        ICollection<RateDTO> GetRates(int skip, int limit);
         RateDTO GetRateById(int Id);
         RateDTO CreateRate(RateRequest screenTypeRequest);
         RateDTO UpdateRate(int id, RateRequest screenTypeRequest);

@@ -4,6 +4,7 @@ using cinema_core.Models;
 using cinema_core.Models.Base;
 using cinema_core.Repositories.Base;
 using cinema_core.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

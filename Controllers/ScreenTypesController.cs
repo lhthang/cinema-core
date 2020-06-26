@@ -27,8 +27,15 @@ namespace cinema_core.Controllers
         [Authorize(Roles=Authorize.Admin)]
         public IActionResult Get()
         {
-            var screenTypes = screenTypeRepository.GetScreenTypes();
-            return Ok(screenTypes);
+            try
+            {
+                var screenTypes = screenTypeRepository.GetScreenTypes();
+                return Ok(screenTypes);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
         // GET: api/screen-types/GetScreenTypesByMovieId/1
@@ -36,8 +43,15 @@ namespace cinema_core.Controllers
         [AllowAnonymous]
         public IActionResult GetScreenTypesByMovieId(int movieId)
         {
-            var screenTypes = screenTypeRepository.GetScreenTypesByMovieId(movieId);
-            return Ok(screenTypes);
+            try
+            {
+                var screenTypes = screenTypeRepository.GetScreenTypesByMovieId(movieId);
+                return Ok(screenTypes);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
         // GET: api/screen-types/GetScreenTypesByRoomId/1
@@ -45,8 +59,15 @@ namespace cinema_core.Controllers
         [AllowAnonymous]
         public IActionResult GetScreenTypesByRoomId(int roomId)
         {
-            var screenTypes = screenTypeRepository.GetScreenTypesByRoomId(roomId);
-            return Ok(screenTypes);
+            try
+            {
+                var screenTypes = screenTypeRepository.GetScreenTypesByRoomId(roomId);
+                return Ok(screenTypes);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(400, e.Message);
+            }
         }
 
         // GET: api/screen-types/5
