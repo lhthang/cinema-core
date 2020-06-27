@@ -7,7 +7,7 @@ using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Repositories;
 using cinema_core.Repositories.Interfaces;
-using cinema_core.Utils.Error;
+using cinema_core.Utils.ErrorHandle;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,7 +37,7 @@ namespace cinema_core.Controllers
         {
             if (limit <= 0)
             {
-                Error error = new Error() { Message = "Limit must be greater than 0" };
+                Error error = new Error() { message = "Limit must be greater than 0" };
                 return StatusCode(400, error);
             }
             var movie = movieRepository.GetAllMovies(query,skip,limit);
@@ -58,7 +58,7 @@ namespace cinema_core.Controllers
         {
             if (day <= 0)
             {
-                Error error = new Error() { Message = "Query coming day must be greater than 0" };
+                Error error = new Error() { message = "Query coming day must be greater than 0" };
                 return StatusCode(400, error);
             }
             var movie = movieRepository.GetAllMoviesComing(day);
@@ -92,7 +92,7 @@ namespace cinema_core.Controllers
             var movie = movieRepository.CreateMovie(movieRequest);
             if (movie == null)
             {
-                var error = new Error() { Message = "Something went wrong when save movie" };
+                var error = new Error() { message = "Something went wrong when save movie" };
                 return StatusCode(400, error);
             }
             return RedirectToRoute("GetMovie", new { id = movie.Id });
@@ -115,7 +115,7 @@ namespace cinema_core.Controllers
             var movie = movieRepository.UpdateMovie(id,movieRequest);
             if (movie == null)
             {
-                var error = new Error() { Message = "Something went wrong when save movie" };
+                var error = new Error() { message = "Something went wrong when save movie" };
                 return StatusCode(400, error);
             }
             return Ok(new MovieDTO(movie));
@@ -129,7 +129,7 @@ namespace cinema_core.Controllers
 
             if (!movieRepository.DeleteMovie(isExist))
             {
-                var error = new Error() { Message = "Something went wrong when save movie" };
+                var error = new Error() { message = "Something went wrong when save movie" };
                 return StatusCode(400, error);
             }
             return Ok(new MovieDTO(isExist));

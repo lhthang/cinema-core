@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace cinema_core.Utils.Error
+namespace cinema_core.Utils.ErrorHandle
 {
     public class Error
     {
-        public string Message { get; set; }
+        public int statusCode { get; set; }
+        public string message { get; set; }
     }
 }

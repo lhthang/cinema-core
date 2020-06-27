@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using cinema_core.DTOs.MovieDTOs;
 using cinema_core.Models;
 using cinema_core.Repositories.Interfaces;
-using cinema_core.Utils.Error;
+using cinema_core.Utils.ErrorHandle;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,7 +27,7 @@ namespace cinema_core.Controllers
         {
             if (limit <= 0)
             {
-                var error = new Error() { Message = "Limit must be greater than 0" };
+                var error = new Error() { message = "Limit must be greater than 0" };
                 return StatusCode(400, error);
             }
             var actors = actorRepository.GetAllActors(skip,limit);

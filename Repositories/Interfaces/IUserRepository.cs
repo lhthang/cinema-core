@@ -1,4 +1,5 @@
-﻿using cinema_core.Models;
+﻿using cinema_core.DTOs.UserDTOs;
+using cinema_core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,9 @@ namespace cinema_core.Repositories
     public interface IUserRepository
     {
         ICollection<Role> GetRolesOfUser(int id);
-        User GetUserByUsername(string username);
-        User GetUserById(int id);
+        ICollection<UserDTO> GetAllUsers();
+        UserDTO GetUserByUsername(string username);
+        User GetUser(string username);
+        UserDTO GetUserById(int id);
     }
 }

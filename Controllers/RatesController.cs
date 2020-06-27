@@ -6,7 +6,7 @@ using cinema_core.DTOs.RateDTOs;
 using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Repositories.Interfaces;
-using cinema_core.Utils.Error;
+using cinema_core.Utils.ErrorHandle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

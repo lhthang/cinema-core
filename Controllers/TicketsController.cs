@@ -1,6 +1,5 @@
 ﻿using cinema_core.Form;
 using cinema_core.Repositories.Interfaces;
-using cinema_core.Utils.Error;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

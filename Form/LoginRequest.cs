@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 
 namespace cinema_core.Form
 {
-    public class UserRequest
+    public class LoginRequest
     {
         [Required]
         public string Username
         {
             get; set;
         }
-
-        [Required]
-        public string Email { get; set; }
 
         [Required]
         public string Password

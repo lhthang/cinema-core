@@ -1,7 +1,7 @@
 ﻿using cinema_core.DTOs.ClusterDTOs;
 using cinema_core.Form;
 using cinema_core.Repositories;
-using cinema_core.Utils.Error;
+using cinema_core.Utils.ErrorHandle;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ namespace cinema_core.Controllers
         {
             if (limit <= 0)
             {
-                var error = new Error() { Message = "Limit must be greater than 0" };
+                var error = new Error() { message = "Limit must be greater than 0" };
                 return StatusCode(400, error);
             }
             var clusters = clusterRepository.GetAllClusters(skip, limit);
@@ -72,7 +72,7 @@ namespace cinema_core.Controllers
             var cluster = clusterRepository.CreateCluster(clusterRequest);
             if (cluster == null)
             {
-                var error = new Error() { Message = "Cluster went oopsie when creating" };
+                var error = new Error() { message = "Cluster went oopsie when creating" };
                 return StatusCode(400, error);
             }
             return RedirectToRoute("GetCluster", new { id = cluster.Id });
@@ -102,7 +102,7 @@ namespace cinema_core.Controllers
             var cluster = clusterRepository.UpdateCluster(id, clusterRequest);
             if (cluster == null)
             {
-                var error = new Error() { Message = "Cluster went oopsie when updating" };
+                var error = new Error() { message = "Cluster went oopsie when updating" };
                 return StatusCode(400, error);
             }
             return Ok(new ClusterDTO(cluster));
@@ -120,7 +120,7 @@ namespace cinema_core.Controllers
 
             if (!clusterRepository.DeleteCluster(cluster))
             {
-                var error = new Error() { Message = "Cluster went oopsie when deleting" };
+                var error = new Error() { message = "Cluster went oopsie when deleting" };
                 return StatusCode(400, error);
             }
             return Ok(cluster);

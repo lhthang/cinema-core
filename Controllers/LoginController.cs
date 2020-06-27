@@ -29,14 +29,14 @@ namespace cinema_core.Controllers
             jwtToken = new JwtToken();
         }
         [HttpPost()]
-        public IActionResult PostUser([FromBody] UserRequest user)
+        public IActionResult PostUser([FromBody] LoginRequest user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var found = userRepository.GetUserByUsername(user.Username);
+            var found = userRepository.GetUser(user.Username);
 
             if (found == null)
                 return Unauthorized();

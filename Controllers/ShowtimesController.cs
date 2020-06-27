@@ -2,7 +2,7 @@
 using cinema_core.Form;
 using cinema_core.Repositories;
 using cinema_core.Repositories.Interfaces;
-using cinema_core.Utils.Error;
+using cinema_core.Utils.ErrorHandle;
 using cinema_core.Utils.Constants;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -37,7 +37,7 @@ namespace cinema_core.Controllers
         {
             if (limit <= 0)
             {
-                var error = new Error() { Message = "Limit must be greater than 0" };
+                var error = new Error() { message = "Limit must be greater than 0" };
                 return StatusCode(400, error);
             }
             var showtimes = showtimeRepository.GetAllShowtimes(skip, limit);
@@ -77,7 +77,7 @@ namespace cinema_core.Controllers
             var showtime = showtimeRepository.CreateShowtime(showtimeRequest);
             if (showtime == null)
             {
-                var error = new Error() { Message = "Showtime went oopsie when creating" };
+                var error = new Error() { message = "Showtime went oopsie when creating" };
                 return StatusCode(400, error);
             }
             return RedirectToRoute("GetShowtime", new { id = showtime.Id });
@@ -107,7 +107,7 @@ namespace cinema_core.Controllers
             var showtime = showtimeRepository.UpdateShowtime(id, showtimeRequest);
             if (showtime == null)
             {
-                var error = new Error() { Message = "Showtime went oopsie when updating" };
+                var error = new Error() { message = "Showtime went oopsie when updating" };
                 return StatusCode(400, error);
             }
             return Ok(new ShowtimeDTO(showtime));
@@ -125,7 +125,7 @@ namespace cinema_core.Controllers
 
             if (!showtimeRepository.DeleteShowtime(showtime))
             {
-                var error = new Error() { Message = "Showtime went oopsie when deleting" };
+                var error = new Error() { message = "Showtime went oopsie when deleting" };
                 return StatusCode(400, error);
             }
             return Ok(showtime);

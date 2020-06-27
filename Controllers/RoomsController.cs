@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using cinema_core.DTOs.RoomDTOs;
 using cinema_core.Form;
 using cinema_core.Repositories;
-using cinema_core.Utils.Error;
+using cinema_core.Utils.ErrorHandle;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -31,7 +31,7 @@ namespace cinema_core.Controllers
         {
             if (limit <= 0)
             {
-                var error = new Error() {Message = "Limit must be greater than 0" };
+                var error = new Error() {message = "Limit must be greater than 0" };
                 return StatusCode(400, error);
             }
             var rooms = roomRepository.GetAllRooms(skip,limit);
@@ -64,7 +64,7 @@ namespace cinema_core.Controllers
             var room = roomRepository.CreateRoom(roomRequest);
             if (room == null)
             {
-                var error = new Error() { Message = "Something went wrong when save room" };
+                var error = new Error() { message = "Something went wrong when save room" };
                 return StatusCode(400, error);
             }
             return RedirectToRoute("GetRoom", new { id = room.Id });
@@ -86,7 +86,7 @@ namespace cinema_core.Controllers
             var room = roomRepository.UpdateRoom(id,roomRequest);
             if (room==null)
             {
-                var error = new Error() { Message = "Something went wrong when save room" };
+                var error = new Error() { message = "Something went wrong when save room" };
                 return StatusCode(400, error);
             }
             return Ok(new RoomDTO(room));
@@ -101,7 +101,7 @@ namespace cinema_core.Controllers
 
             if (!roomRepository.DeleteRoom(isExist))
             {
-                var error = new Error() { Message = "Something went wrong when delete room" };
+                var error = new Error() { message = "Something went wrong when delete room" };
                 return StatusCode(400, error);
             }
             return Ok(isExist);

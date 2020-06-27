@@ -1,7 +1,7 @@
 ﻿using cinema_core.DTOs.GenreDTOs;
 using cinema_core.Form;
 using cinema_core.Repositories.Interfaces;
-using cinema_core.Utils.Error;
+using cinema_core.Utils.ErrorHandle;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
