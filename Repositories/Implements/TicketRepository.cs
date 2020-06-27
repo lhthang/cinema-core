@@ -1,4 +1,5 @@
 ﻿using cinema_core.DTOs.TicketDTOs;
+using cinema_core.ErrorHandle;
 using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -84,7 +86,7 @@ namespace cinema_core.Repositories.Implements
         {
             var ticket = dbContext.Tickets.Where(r => r.Id == id).FirstOrDefault();
             if (ticket == null)
-                throw new Exception("Id not found.");
+                throw new CustomException(HttpStatusCode.NotFound, "Id not found.");
 
             return ticket;
         }
@@ -93,23 +95,23 @@ namespace cinema_core.Repositories.Implements
         {
             var showtime = dbContext.Showtime.Include(x => x.Room).FirstOrDefault(x => x.Id == ticketRequest.ShowtimeId);
             if (showtime == null)
-                throw new Exception("Cannot find Showtime.");
+                throw new CustomException(HttpStatusCode.NotFound,"Cannot find Showtime.");
 
             string seatStr = ticketRequest.Seat;
             // XYY with:    X: an alphabet letter;    Y: a digit
             // Valid: A01, A1, B00, B99. Invalid: AB01, A100
             var seatRegex = new Regex(@"^[A-Z]\d{1,2}$");
             if (!seatRegex.IsMatch(seatStr))
-                throw new Exception("Wrong seat format.");
+                throw new CustomException(HttpStatusCode.BadRequest, "Wrong seat format.");
 
             int alphabetPart = Convert.ToInt32(seatStr[0]); // ASCII
             int digitPart = int.Parse(seatStr.Substring(1));
 
             if (alphabetPart < 65 || alphabetPart > 64 + showtime.Room.TotalRows)
-                throw new Exception("Invalid row of Seat.");
+                throw new CustomException(HttpStatusCode.BadRequest, "Invalid row of Seat.");
 
             if (digitPart < 1 || digitPart > showtime.Room.TotalSeatsPerRow)
-                throw new Exception("Invalid column of Seat.");
+                throw new CustomException(HttpStatusCode.BadRequest, "Invalid column of Seat.");
 
             var ticketsOfShowtime = dbContext.Tickets.Where(x => x.ShowtimeId == ticketRequest.ShowtimeId);
             foreach (var ticketOfShowtime in ticketsOfShowtime)
@@ -118,7 +120,7 @@ namespace cinema_core.Repositories.Implements
                 int digit = int.Parse(ticketOfShowtime.Seat.Substring(1));
 
                 if (alphabetPart == alphabet && digitPart == digit)
-                    throw new Exception("Seat already occupied.");
+                    throw new CustomException(HttpStatusCode.BadRequest, "Seat already occupied.");
             }
 
             //var ticketBySeat = dbContext.Tickets.FirstOrDefault(x => x.ShowtimeId == ticketRequest.ShowtimeId && x.Seat == ticketRequest.Seat);

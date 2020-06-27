@@ -1,12 +1,15 @@
 ﻿using cinema_core.DTOs.ScreenTypeDTOs;
+using cinema_core.ErrorHandle;
 using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
 using cinema_core.Repositories.Base;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace cinema_core.Repositories.Implements
@@ -109,7 +112,7 @@ namespace cinema_core.Repositories.Implements
         {
             var screenType = dbContext.ScreenTypes.Where(r => r.Id == id).FirstOrDefault();
             if (screenType == null)
-                throw new Exception("Id not found.");
+                throw new CustomException(HttpStatusCode.NotFound,"Id not found.");
 
             return screenType;
         }
@@ -118,7 +121,7 @@ namespace cinema_core.Repositories.Implements
         {
             var screenTypeByName = dbContext.ScreenTypes.Where(sc => sc.Name == name).FirstOrDefault();
             if (screenTypeByName != null)
-                throw new Exception($"Screen Type {name} already existed.");
+                throw new CustomException(HttpStatusCode.BadRequest,$"Screen Type {name} already existed.");
         }
     }
 }
