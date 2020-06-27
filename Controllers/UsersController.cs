@@ -39,7 +39,7 @@ namespace cinema_core.Controllers
 
         // GET: api/users/5
         [HttpGet("{id}")]
-        [Authorize(Roles ="SSS")]
+        [Authorize()]
         public IActionResult Get(int id)
         {
             try

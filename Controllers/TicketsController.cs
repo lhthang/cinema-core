@@ -30,7 +30,7 @@ namespace cinema_core.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                throw e;
             }
         }
 
@@ -45,7 +45,7 @@ namespace cinema_core.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                throw e;
             }
         }
 
@@ -65,7 +65,7 @@ namespace cinema_core.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                throw e;
             }
         }
 
@@ -85,7 +85,7 @@ namespace cinema_core.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                throw e;
             }
         }
 
@@ -100,7 +100,7 @@ namespace cinema_core.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(400, e.Message);
+                throw e;
             }
         }
     }
