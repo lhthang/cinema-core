@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using cinema_core.Models;
 using cinema_core.Repositories;
 using cinema_core.Utils;
+using cinema_core.Utils.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 namespace cinema_core.Controllers
 {
@@ -42,6 +44,7 @@ namespace cinema_core.Controllers
         [Authorize()]
         public IActionResult Get(int id)
         {
+            var username = Constants.GetUsername(Request);
             try
             {
                 var user = userRepository.GetUserById(id);
