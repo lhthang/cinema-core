@@ -7,7 +7,8 @@ namespace cinema_core.DTOs.ReportDTOs
 {
     public class ReportDTO
     {
-        public string MovieTitle { get; set; }
+        public int MovieId { get; set; }
+        public string Title { get; set; }
         public int Showtimes { get; set; }
         public int Tickets { get; set; }
         public int Revenue { get; set; }

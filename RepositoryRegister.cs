@@ -23,6 +23,7 @@ namespace cinema_core
             services.AddScoped<IRateRepository, RateRepository>();
             services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
         }
     }
 }

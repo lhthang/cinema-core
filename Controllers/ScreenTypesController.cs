@@ -22,7 +22,6 @@ namespace cinema_core.Controllers
 
         // GET: api/screen-types
         [HttpGet]
-        [Authorize(Roles=Authorize.Admin)]
         public IActionResult Get()
         {
             try
@@ -54,7 +53,6 @@ namespace cinema_core.Controllers
 
         // GET: api/screen-types/GetScreenTypesByRoomId/1
         [HttpGet("[action]/{roomId}", Name = "GetScreenTypesByRoomId")]
-        [AllowAnonymous]
         public IActionResult GetScreenTypesByRoomId(int roomId)
         {
             try
@@ -86,6 +84,7 @@ namespace cinema_core.Controllers
 
         // POST: api/screen-types
         [HttpPost]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Post([FromBody] ScreenTypeRequest screenTypeRequest)
         {
             if (screenTypeRequest == null)
@@ -106,6 +105,7 @@ namespace cinema_core.Controllers
 
         // PUT: api/screen-types/5
         [HttpPut("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Put(int id, [FromBody] ScreenTypeRequest screenTypeRequest)
         {
             if (screenTypeRequest == null)
@@ -126,6 +126,7 @@ namespace cinema_core.Controllers
 
         // DELETE: api/screen-types/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Delete(int id)
         {
             try
