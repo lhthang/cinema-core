@@ -113,7 +113,7 @@ namespace cinema_core.Repositories.Implements
             if (digitPart < 1 || digitPart > showtime.Room.TotalSeatsPerRow)
                 throw new CustomException(HttpStatusCode.BadRequest, "Invalid column of Seat.");
 
-            var ticketsOfShowtime = dbContext.Tickets.Where(x => x.ShowtimeId == ticketRequest.ShowtimeId);
+            var ticketsOfShowtime = dbContext.Tickets.Where(x => x.ShowtimeId == ticketRequest.ShowtimeId).ToList();
             foreach (var ticketOfShowtime in ticketsOfShowtime)
 			{
                 int alphabet = Convert.ToInt32(ticketOfShowtime.Seat[0]);
