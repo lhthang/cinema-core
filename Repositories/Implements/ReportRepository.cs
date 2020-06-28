@@ -58,7 +58,7 @@ namespace cinema_core.Repositories.Implements
                 int totalTickets = 0;
                 foreach (var r in result)
                 {
-                    totalPrice += 1;
+                    totalPrice += r.tickets;
                     totalTickets += r.tickets;
                 }
                 report.Tickets = totalTickets;
