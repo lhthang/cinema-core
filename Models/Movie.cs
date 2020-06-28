@@ -12,6 +12,7 @@ namespace cinema_core.Models
 
         public string[] Languages { get; set; }
         public string Story { get;set; }
+        public string Imdb { get; set; }
 
         public string Country { get; set; }
         public string Title { get; set; }

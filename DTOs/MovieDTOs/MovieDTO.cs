@@ -21,6 +21,7 @@ namespace cinema_core.DTOs.MovieDTOs
 
         public string[] Languages { get; set; }
         public string Story { get; set; }
+        public string Imdb { get; set; }
         public int Runtime { get; set; }
         public DateTime ReleasedAt { get; set; }
         public DateTime EndAt { get; set; }
@@ -47,6 +48,7 @@ namespace cinema_core.DTOs.MovieDTOs
             this.Story = movie.Story;
             this.EndAt = movie.EndAt;
             this.Directors = movie.Directors;
+            this.Imdb = movie.Imdb;
             List<ScreenTypeDTO> list = new List<ScreenTypeDTO>();
             if (movie.MovieScreenTypes != null)
             {
