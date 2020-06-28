@@ -1,5 +1,7 @@
 ﻿using cinema_core.Form;
 using cinema_core.Repositories.Interfaces;
+using cinema_core.Utils.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -51,13 +53,15 @@ namespace cinema_core.Controllers
 
         // POST: api/tickets
         [HttpPost]
+        [Authorize]
         public IActionResult Post([FromBody] TicketRequest ticketRequest)
         {
             if (ticketRequest == null)
                 return StatusCode(400, ModelState);
             if (!ModelState.IsValid)
                 return StatusCode(400, ModelState);
-
+            var username = Constants.GetUsername(Request);
+            ticketRequest.Username = username;
             try
             {
                 var ticket = ticketRepository.BuyTicket(ticketRequest);

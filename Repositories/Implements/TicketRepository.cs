@@ -5,6 +5,8 @@ using cinema_core.Models;
 using cinema_core.Models.Base;
 using cinema_core.Repositories.Base;
 using cinema_core.Repositories.Interfaces;
+using cinema_core.Utils.Email;
+using cinema_core.Utils.QR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace cinema_core.Repositories.Implements
@@ -51,8 +54,13 @@ namespace cinema_core.Repositories.Implements
 
             dbContext.Add(ticket);
             Save();
+            var user = dbContext.Users.Where(u => u.Username == ticketRequest.Username).FirstOrDefault();
+            var showtime = dbContext.Showtime.Where(s => s.Id == ticketRequest.ShowtimeId).Include(m => m.Movie).FirstOrDefault();
+            Thread thread = new Thread(()=> EmailService.SendEmail(MyQRCode.GenerateQRCodeImage(ticket.Id),user,showtime.Movie));
+            thread.Start();
             return new TicketDTO(ticket);
         }
+
 
         public TicketDTO UpdateTicket(int id, TicketRequest ticketRequest)
         {

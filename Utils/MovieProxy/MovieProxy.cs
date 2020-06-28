@@ -16,6 +16,7 @@ namespace cinema_core.Utils.MovieProxy
             string result = new WebClient().DownloadString("http://www.omdbapi.com/?apikey=b9d9362f&i=" + imdb);
             MovieResponse movie = new MovieResponse();
             dynamic json = JsonConvert.DeserializeObject(result);
+            movie.Imdb = imdb;
             movie.Title = json["Title"];
             movie.Country = json["Country"];
             movie.Poster = json["Poster"];

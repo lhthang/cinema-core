@@ -108,6 +108,9 @@ namespace cinema_core.Migrations
                     b.Property<DateTime>("EndAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Imdb")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Languages")
                         .HasColumnType("nvarchar(max)");
 

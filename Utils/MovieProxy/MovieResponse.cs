@@ -9,7 +9,7 @@ namespace cinema_core.Utils.MovieProxy
     public class MovieResponse
     {
         public string Title { get; set; }
-
+        public string Imdb { get; set; }
         public List<Actor> Actors { get; set; }
         public string[] Directors { get; set; }
         public string Country { get; set; }
