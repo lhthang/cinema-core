@@ -1,4 +1,5 @@
-﻿using System;
+﻿using cinema_core.Models;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -12,13 +13,13 @@ namespace cinema_core.Utils.Email
 {
     public static class EmailService
     {
-        public static void SendEmail(Bitmap image)
+        public static void SendEmail(Bitmap image,User user,Movie movie)
         {
             var fromAddress = new MailAddress("adm.cinex@gmail.com", "Admin Cinex");
-            var toAddress = new MailAddress("lhthang.98@gmail.com", "Thang Le");
+            var toAddress = new MailAddress(user.Email, user.FullName);
             const string fromPassword = "admin@123456";
-            const string subject = "Ticket Movie : ";
-            const string body = "Please save this image for checking in";
+            string subject = "Ticket Movie : "+movie.Title;
+            string body = "Dear "+user.FullName+" . Please save this image for checking in";
 
             var smtp = new SmtpClient
             {

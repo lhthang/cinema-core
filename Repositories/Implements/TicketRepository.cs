@@ -54,7 +54,9 @@ namespace cinema_core.Repositories.Implements
 
             dbContext.Add(ticket);
             Save();
-            Thread thread = new Thread(()=> EmailService.SendEmail(MyQRCode.GenerateQRCodeImage(ticket.Id)));
+            var user = dbContext.Users.Where(u => u.Username == ticketRequest.Username).FirstOrDefault();
+            var showtime = dbContext.Showtime.Where(s => s.Id == ticketRequest.ShowtimeId).Include(m => m.Movie).FirstOrDefault();
+            Thread thread = new Thread(()=> EmailService.SendEmail(MyQRCode.GenerateQRCodeImage(ticket.Id),user,showtime.Movie));
             thread.Start();
             return new TicketDTO(ticket);
         }

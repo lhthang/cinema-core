@@ -9,7 +9,6 @@ namespace cinema_core.Form
 {
     public class TicketRequest
     {
-        [Required]
         public string Username { get; set; } // TEMP. TODO: Get by token
         [Required]
         public int ShowtimeId { get; set; }
