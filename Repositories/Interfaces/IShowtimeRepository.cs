@@ -19,6 +19,8 @@ namespace cinema_core.Repositories
 
         bool DeleteShowtime(Showtime showtime);
 
+        void AutoUpdateShowtime();
+
         bool Save();
     }
 }

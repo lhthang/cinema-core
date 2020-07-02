@@ -5,6 +5,7 @@ using System.Text;
 using cinema_core.ErrorHandle;
 using cinema_core.Models.Base;
 using cinema_core.Utils.ErrorHandle;
+using cinema_core.Utils.Schedule;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +38,8 @@ namespace cinema_core
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             ) ;
+
+            services.AddHostedService<CronJob>();
 
             services.AddSwaggerGen(c =>
             {

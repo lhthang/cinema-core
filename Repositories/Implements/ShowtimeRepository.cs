@@ -97,5 +97,24 @@ namespace cinema_core.Repositories.Implements
         {
             return dbContext.SaveChanges() > 0;
         }
+
+        public void AutoUpdateShowtime()
+        {
+            var startOfDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
+            var endOfDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
+            var showtimes = dbContext.Showtime.Where(s => s.StartAt.CompareTo(startOfDay) >= 0 && s.StartAt.CompareTo(endOfDay) <= 0&&s.Status=="OPEN")
+                .OrderByDescending(c => c.StartAt).ToList();
+
+            foreach( var showtime in showtimes)
+            {
+                System.Diagnostics.Debug.WriteLine(showtime.StartAt);
+                if (showtime.StartAt.CompareTo(DateTime.Now) <= 0)
+                {
+                    showtime.Status = "CLOSE";
+                    dbContext.Update(showtime);
+                }
+            }
+            Save();
+        }
     }
 }
