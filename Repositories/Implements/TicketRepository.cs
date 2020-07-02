@@ -55,6 +55,7 @@ namespace cinema_core.Repositories.Implements
                     ShowtimeId = ticketRequest.ShowtimeId,
                     TicketType = seat.TicketType,
                     Seat = seat.Seat,
+                    Price = GetTicketPrice(ticketRequest.ShowtimeId, seat.TicketType),
                     ModifiedAt = DateTime.Now,
                 };
                 ticketsToAdd.Add(ticket);
@@ -209,6 +210,24 @@ namespace cinema_core.Repositories.Implements
    //             if (alphabetPart == alphabet && digitPart == digit)
    //                 throw new CustomException(HttpStatusCode.BadRequest, "Seat already occupied.");
    //         }
+        }
+
+        private decimal GetTicketPrice(int showtimeId, TicketType ticketType)
+        {
+            var showtime = dbContext.Showtime.FirstOrDefault(x => x.Id == showtimeId);
+            decimal ticketPrice = showtime.BasePrice;
+
+            // Temp Hardcode. TODO: Save ticketType's price somewhere else
+            switch (ticketType)
+            {
+                case TicketType.Child:
+                    ticketPrice *= 1;
+                    break;
+                case TicketType.Adult:
+                    ticketPrice *= (decimal)0.8;
+                    break;
+            }
+            return ticketPrice;
         }
     }
 }

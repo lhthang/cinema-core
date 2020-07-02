@@ -15,13 +15,15 @@ namespace cinema_core.Form
         //public List<string> Seats { get; set; }
         //[Required]
         //public TicketType TicketType { get; set; }
-
+        [Required]
         public List<TicketSeatRequest> Seats { get; set; }
     }
 
     public class TicketSeatRequest
     {
+        [Required]
         public string Seat { get; set; }
+        [Required]
         public TicketType TicketType { get; set; }
     }
 }

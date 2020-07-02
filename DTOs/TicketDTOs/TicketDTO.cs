@@ -15,6 +15,7 @@ namespace cinema_core.DTOs.TicketDTOs
         public ShowtimeDTO Showtime { get; set; }
         public string Seat { get; set; }
         public TicketType TicketType { get; set; }
+        public decimal Price { get; set; }
         public DateTime ModifiedAt { get; set; }
 
         public TicketDTO(Ticket ticket)
@@ -27,6 +28,7 @@ namespace cinema_core.DTOs.TicketDTOs
             Showtime = new ShowtimeDTO(ticket.Showtime);
             Seat = ticket.Seat;
             TicketType = ticket.TicketType;
+            Price = ticket.Price;
             ModifiedAt = ticket.ModifiedAt;
         }
     }

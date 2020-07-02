@@ -12,6 +12,8 @@ namespace cinema_core.Form
         [Required]
         public string StartAt { get; set; }
         [Required]
+        public decimal BasePrice { get; set; }
+        [Required]
         public int MovieId { get; set; }
         [Required]
         public int RoomId { get; set; }

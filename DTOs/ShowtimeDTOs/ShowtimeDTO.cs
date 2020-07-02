@@ -15,6 +15,7 @@ namespace cinema_core.DTOs.ShowtimeDTOs
         public string Status { get; set; }
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }
+        public decimal BasePrice { get; set; }
         public MovieDTO Movie { get; set; }
         public RoomDTO Room { get; set; }
         public ScreenTypeDTO ScreenType { get; set; }
@@ -27,6 +28,7 @@ namespace cinema_core.DTOs.ShowtimeDTOs
             this.Id = showtime.Id;
             this.Status = showtime.Status;
             this.StartAt = showtime.StartAt;
+            this.BasePrice = showtime.BasePrice;
             this.EndAt = showtime.EndAt;
             this.Movie = new MovieDTO(showtime.Movie);
             this.Room = new RoomDTO(showtime.Room);

@@ -289,6 +289,9 @@ namespace cinema_core.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<decimal>("BasePrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("EndAt")
                         .HasColumnType("datetime2");
 
@@ -327,6 +330,9 @@ namespace cinema_core.Migrations
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Seat")
                         .HasColumnType("nvarchar(max)");

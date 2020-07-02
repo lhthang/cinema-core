@@ -55,6 +55,7 @@ namespace cinema_core.Repositories.Implements
             {
                 showtime.EndAt = showtime.StartAt.AddMinutes(showtime.Movie.Runtime);
             }
+            showtime.BasePrice = showtimeRequest.BasePrice;
             showtime.Room = dbContext.Rooms.Where(r => r.Id == showtimeRequest.RoomId).FirstOrDefault();
             showtime.ScreenType = dbContext.ScreenTypes.Where(st => st.Id == showtimeRequest.ScreenTypeId).FirstOrDefault();
             dbContext.Add(showtime);
@@ -76,6 +77,7 @@ namespace cinema_core.Repositories.Implements
             {
                 showtime.EndAt = showtime.StartAt.AddMinutes(showtime.Movie.Runtime);
             }
+            showtime.BasePrice = showtimeRequest.BasePrice;
             showtime.Room = dbContext.Rooms.Where(r => r.Id == showtimeRequest.RoomId).FirstOrDefault();
             showtime.ScreenType = dbContext.ScreenTypes.Where(st => st.Id == showtimeRequest.ScreenTypeId).FirstOrDefault();
             dbContext.Update(showtime);

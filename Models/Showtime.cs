@@ -11,6 +11,7 @@ namespace cinema_core.Models
         public string Status { get; set; }
         public DateTime StartAt { get; set; }
         public DateTime EndAt { get; set; }
+        public decimal BasePrice { get; set; }
         public int MovieId { get; set; }
         public Movie Movie { get; set; }
         public int RoomId { get; set; }
