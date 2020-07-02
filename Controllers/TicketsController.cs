@@ -52,20 +52,19 @@ namespace cinema_core.Controllers
         }
 
         // POST: api/tickets
-        [HttpPost]
+        [HttpPost("[action]")]
         [Authorize]
-        public IActionResult Post([FromBody] TicketRequest ticketRequest)
+        public IActionResult BuyTickets([FromBody] TicketRequest ticketRequest)
         {
             if (ticketRequest == null)
                 return StatusCode(400, ModelState);
             if (!ModelState.IsValid)
                 return StatusCode(400, ModelState);
             var username = Constants.GetUsername(Request);
-            ticketRequest.Username = username;
             try
             {
-                var ticket = ticketRepository.BuyTicket(ticketRequest);
-                return Ok(ticket);
+                var tickets = ticketRepository.BuyTickets(username, ticketRequest);
+                return Ok(tickets);
             }
             catch (Exception e)
             {
@@ -73,25 +72,25 @@ namespace cinema_core.Controllers
             }
         }
 
-        // POST: api/tickets
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] TicketRequest ticketRequest)
-        {
-            if (ticketRequest == null)
-                return StatusCode(400, ModelState);
-            if (!ModelState.IsValid)
-                return StatusCode(400, ModelState);
+        //// POST: api/tickets
+        //[HttpPut("{id}")]
+        //public IActionResult Put(int id, [FromBody] TicketRequest ticketRequest)
+        //{
+        //    if (ticketRequest == null)
+        //        return StatusCode(400, ModelState);
+        //    if (!ModelState.IsValid)
+        //        return StatusCode(400, ModelState);
 
-            try
-            {
-                var ticket = ticketRepository.UpdateTicket(id, ticketRequest);
-                return Ok(ticket);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+        //    try
+        //    {
+        //        var ticket = ticketRepository.UpdateTicket(id, ticketRequest);
+        //        return Ok(ticket);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw e;
+        //    }
+        //}
 
         // DELETE: api/ticket/5
         [HttpDelete("{id}")]

@@ -20,10 +20,10 @@ namespace cinema_core.Utils.QR
             return Convert.ToBase64String(imageBytes);
         }
 
-        public static Bitmap GenerateQRCodeImage(int id)
+        public static Bitmap GenerateQRCodeImage(List<int> ids)
         {
             QRCodeGenerator _qrCode = new QRCodeGenerator();
-            QRCodeData _qrCodeData = _qrCode.CreateQrCode(id.ToString(), QRCodeGenerator.ECCLevel.Q);
+            QRCodeData _qrCodeData = _qrCode.CreateQrCode(string.Join(";", ids), QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(_qrCodeData);
             Bitmap qrCodeImage = qrCode.GetGraphic(20);
             return qrCodeImage;
