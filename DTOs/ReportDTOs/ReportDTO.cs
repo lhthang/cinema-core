@@ -11,6 +11,6 @@ namespace cinema_core.DTOs.ReportDTOs
         public string Title { get; set; }
         public int Showtimes { get; set; }
         public int Tickets { get; set; }
-        public int Revenue { get; set; }
+        public decimal Revenue { get; set; }
     }
 }

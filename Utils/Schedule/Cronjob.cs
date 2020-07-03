@@ -17,8 +17,8 @@ namespace cinema_core.Utils.Schedule
         private DateTime _nextRun;
 
 
-        private string Schedule => "*/10 * * * * *"; //Runs every 10 seconds
-        //private string Schedule => "59 0/02 * * * *"; 
+        //private string Schedule => "*/10 * * * * *"; //Runs every 10 seconds
+        private string Schedule => "59 0/10 * * * *"; //Run every 10 minutes from 00:00
 
         public CronJob(IServiceProvider service)
         {

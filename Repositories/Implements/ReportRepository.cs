@@ -45,7 +45,7 @@ namespace cinema_core.Repositories.Implements
                                   movieId = movie.Id,
                                   tickets = r.Count(),
                                   //TODO get total price when ticket has price
-                                  //totalPrice = r.Sum(t => t.Price),
+                                  totalPrice = r.Sum(t => t.Price),
                               }).ToList();
 
                 var report = new ReportDTO()
@@ -54,11 +54,11 @@ namespace cinema_core.Repositories.Implements
                     Title = movie.Title,
                     Showtimes = showtimes.Count(),
                 };
-                int totalPrice = 0;
+                decimal totalPrice = 0;
                 int totalTickets = 0;
                 foreach (var r in result)
                 {
-                    totalPrice += r.tickets;
+                    totalPrice += r.totalPrice;
                     totalTickets += r.tickets;
                 }
                 report.Tickets = totalTickets;
