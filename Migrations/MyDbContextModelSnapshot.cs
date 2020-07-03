@@ -190,6 +190,31 @@ namespace cinema_core.Migrations
                     b.ToTable("MovieScreenTypes");
                 });
 
+            modelBuilder.Entity("cinema_core.Models.Promotion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("ExpiredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Promotions");
+                });
+
             modelBuilder.Entity("cinema_core.Models.Rate", b =>
                 {
                     b.Property<int>("Id")
@@ -334,6 +359,9 @@ namespace cinema_core.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("PromotionId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Seat")
                         .HasColumnType("nvarchar(max)");
 
@@ -347,6 +375,8 @@ namespace cinema_core.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PromotionId");
 
                     b.HasIndex("ShowtimeId");
 
@@ -514,6 +544,12 @@ namespace cinema_core.Migrations
 
             modelBuilder.Entity("cinema_core.Models.Ticket", b =>
                 {
+                    b.HasOne("cinema_core.Models.Promotion", "Promotion")
+                        .WithMany("Tickets")
+                        .HasForeignKey("PromotionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("cinema_core.Models.Showtime", "Showtime")
                         .WithMany("Tickets")
                         .HasForeignKey("ShowtimeId")

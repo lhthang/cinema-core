@@ -14,7 +14,9 @@ namespace cinema_core.Models
         public virtual Showtime Showtime { get; set; }
         public string Seat { get; set; }
         public TicketType TicketType { get; set; }
-        public decimal Price { get; set; }
+        public int PromotionId { get; set; }
+        public virtual Promotion Promotion { get; set; }
+        public decimal Price { get; set; } // Last price (after discount, ...)
         public DateTime ModifiedAt { get; set; }
     }
 }

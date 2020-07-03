@@ -12,8 +12,8 @@ namespace cinema_core.Repositories.Interfaces
     {
         ICollection<RateDTO> GetRates(int skip, int limit);
         RateDTO GetRateById(int Id);
-        RateDTO CreateRate(RateRequest screenTypeRequest);
-        RateDTO UpdateRate(int id, RateRequest screenTypeRequest);
+        RateDTO CreateRate(RateRequest rateRequest);
+        RateDTO UpdateRate(int id, RateRequest rateRequest);
         bool DeleteRate(int id);
     }
 }
