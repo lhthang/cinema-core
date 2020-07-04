@@ -35,6 +35,12 @@ namespace cinema_core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            }));
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             ) ;
@@ -110,20 +116,6 @@ namespace cinema_core
                         ClockSkew = TimeSpan.Zero
                     };
                 });
-
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll",
-                    builder =>
-                    {
-                        builder
-                            .AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            .AllowAnyHeader()
-                            .AllowCredentials();
-                    });
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -134,6 +126,8 @@ namespace cinema_core
                 app.UseDeveloperExceptionPage();
             }
             context.SeedDataContext();
+
+            app.UseCors("ApiCorsPolicy");
 
             app.UseMiddleware<ErrorHandling>();
 

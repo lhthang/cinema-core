@@ -83,11 +83,8 @@ namespace cinema_core.Controllers
         {
             if (movieRequest == null) return StatusCode(400, ModelState);
 
-            var statusCode = ValidateMovie(movieRequest);
-
-
             if (!ModelState.IsValid)
-                return StatusCode(statusCode.StatusCode,ModelState);
+                return StatusCode(400,ModelState);
 
             var movie = movieRepository.CreateMovie(movieRequest);
             if (movie == null)
@@ -106,11 +103,9 @@ namespace cinema_core.Controllers
 
             if (movieRequest == null) return StatusCode(400, ModelState);
 
-            var statusCode = ValidateUpdateMovie(movieRequest);
-
 
             if (!ModelState.IsValid)
-                return StatusCode(statusCode.StatusCode, ModelState);
+                return StatusCode(400, ModelState);
 
             var movie = movieRepository.UpdateMovie(id,movieRequest);
             if (movie == null)
@@ -133,60 +128,6 @@ namespace cinema_core.Controllers
                 return StatusCode(400, error);
             }
             return Ok(new MovieDTO(isExist));
-        }
-
-        private StatusCodeResult ValidateMovie(MovieRequest movieRequest)
-        {
-            if (movieRequest == null || !ModelState.IsValid) return BadRequest();
-
-            foreach (var id in movieRequest.ScreenTypeIds)
-            {
-                if (screenTypeRepository.GetScreenTypeById(id) == null)
-                {
-                    ModelState.AddModelError("", $"Id {id} not found");
-                    return StatusCode(404);
-                }
-            }
-
-            if (rateRepository.GetRateById(movieRequest.RateId) == null)
-            {
-                ModelState.AddModelError("", $"Rate id {movieRequest.RateId} not found");
-                return StatusCode(404);
-            }
-            return NoContent();
-        }
-
-        private StatusCodeResult ValidateUpdateMovie(UpdateMovieRequest movieRequest)
-        {
-            if (movieRequest == null || !ModelState.IsValid) return BadRequest();
-
-            foreach (var id in movieRequest.ScreenTypeIds)
-            {
-                if (screenTypeRepository.GetScreenTypeById(id) == null)
-                {
-                    ModelState.AddModelError("", $"Id {id} not found");
-                    return StatusCode(404);
-                }
-            }
-
-            if (movieRequest.GenreIds != null)
-            {
-                foreach (var id in movieRequest.GenreIds)
-                {
-                    if (genreRepository.GetGenreById(id) == null)
-                    {
-                        ModelState.AddModelError("", $"Genre {id} not found");
-                        return StatusCode(404);
-                    }
-                }
-            }
-
-            if (rateRepository.GetRateById(movieRequest.RateId) == null)
-            {
-                ModelState.AddModelError("", $"Rate id {movieRequest.RateId} not found");
-                return StatusCode(404);
-            }
-            return NoContent();
         }
     }
 }

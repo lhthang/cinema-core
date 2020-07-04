@@ -46,7 +46,7 @@ namespace cinema_core.Utils.JWT
 
             foreach (var userRole in roles)
             {
-                claims.Add(new Claim("role", userRole.Name));
+                claims.Add(new Claim("roles", userRole.Name));
             }
             return claims;
         }

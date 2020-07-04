@@ -31,7 +31,16 @@ namespace cinema_core.Repositories.Implements
             Coppier<MovieResponse, Movie>.Copy(response, movie);
             Coppier<MovieRequest, Movie>.Copy(movieRequest, movie);
 
-            var rate = dbContext.Rates.Where(r => movieRequest.RateId==r.Id).FirstOrDefault();
+            var rate = dbContext.Rates.Where(r => r.Name==response.RateName).FirstOrDefault();
+            if (rate == null)
+            {
+                rate = new Rate()
+                {
+                    Name = response.RateName,
+                    MinAge = 0,
+                };
+                dbContext.Add(rate);
+            }
             movie.Rate = rate;
 
             var screenTypes = dbContext.ScreenTypes.Where(s => movieRequest.ScreenTypeIds.Contains(s.Id)).ToList();

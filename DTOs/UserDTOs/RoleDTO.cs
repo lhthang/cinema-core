@@ -9,12 +9,12 @@ namespace cinema_core.DTOs.UserDTOs
     public class RoleDTO
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Role { get; set; }
         public RoleDTO() { }
         public RoleDTO(Role role)
         {
             Id = role.Id;
-            Name = role.Name;
+            Role = role.Name;
         }
     }
 }

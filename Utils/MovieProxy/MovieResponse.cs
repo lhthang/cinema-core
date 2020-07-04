@@ -17,6 +17,7 @@ namespace cinema_core.Utils.MovieProxy
         public int Runtime { get; set; }
         public string Poster { get; set; }
         public List<Genre> Genres { get; set; }
+        public string RateName { get; set; }
         public DateTime ReleasedAt { get; set; }
     }
 }
