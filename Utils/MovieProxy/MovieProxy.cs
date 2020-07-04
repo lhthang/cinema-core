@@ -20,6 +20,7 @@ namespace cinema_core.Utils.MovieProxy
             movie.Title = json["Title"];
             movie.Country = json["Country"];
             movie.Poster = json["Poster"];
+            movie.RateName = json["Rated"];
 
             string list = json["Runtime"];
             if (!list.Contains("N/A"))

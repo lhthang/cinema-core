@@ -10,6 +10,7 @@ namespace cinema_core.Utils
     {
         public const string Admin = "Admin";
         public const string User = "User";
+        public const string Staff = "Staff";
 
         public static AuthorizationPolicy AdminPolicy()
         {
