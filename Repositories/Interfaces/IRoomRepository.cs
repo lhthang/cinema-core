@@ -13,6 +13,8 @@ namespace cinema_core.Repositories
         ICollection<RoomDTO> GetAllRooms(int skip, int limit);
         Room GetRoomById(int id);
 
+        ICollection<RoomDTO> GetRoomsByClusterId(int clusterId);
+
         Room CreateRoom(RoomRequest roomRequest);
 
         Room UpdateRoom(int id,RoomRequest roomRequest);

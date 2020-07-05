@@ -11,6 +11,11 @@ namespace cinema_core.Repositories
     public interface IShowtimeRepository
     {
         ICollection<ShowtimeDTO> GetAllShowtimes(int skip, int limit);
+
+        ICollection<ShowtimeDTO> GetShowtimesByClusterId(int clusterId);
+
+        ICollection<ShowtimeDTO> GetShowtimesByRoomId(int roomId);
+
         Showtime GetShowtimeById(int id);
 
         Showtime CreateShowtime(ShowtimeRequest showtimeRequest);

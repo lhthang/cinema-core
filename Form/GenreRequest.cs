@@ -11,7 +11,6 @@ namespace cinema_core.Form
         [Required]
         public string Name { get; set; }
 
-        [Required]
         public string Description { get; set; }
     }
 }

@@ -33,14 +33,22 @@ namespace cinema_core.Controllers
 
         //GET: api/showtimes
         [HttpGet]
-        public IActionResult Get(int skip = 0, int limit = 100000)
+        public IActionResult Get(int skip = 0, int limit = 100000, int cluster = -1)
         {
             if (limit <= 0)
             {
                 var error = new Error() { message = "Limit must be greater than 0" };
                 return StatusCode(400, error);
             }
-            var showtimes = showtimeRepository.GetAllShowtimes(skip, limit);
+            ICollection<ShowtimeDTO> showtimes;
+            if (cluster != -1)
+            {
+                showtimes = showtimeRepository.GetShowtimesByClusterId(cluster);
+            }
+            else
+            {
+                showtimes = showtimeRepository.GetAllShowtimes(skip, limit);
+            }
             return Ok(showtimes);
         }
 
@@ -180,6 +188,18 @@ namespace cinema_core.Controllers
                 {
                     ModelState.AddModelError("", "Need a time machine to see this movie");
                     return StatusCode(400);
+                }
+
+                // Check showtime overlap
+                var showtimes = showtimeRepository.GetShowtimesByRoomId(showtimeRequest.RoomId);
+                foreach (ShowtimeDTO showtime in showtimes)
+                {
+                    validFlag = showtime.StartAt > endAt || showtime.EndAt < startAt;
+                    if (!validFlag)
+                    {
+                        ModelState.AddModelError("", "Showtimes overlap");
+                        return StatusCode(400);
+                    }
                 }
             }
             catch (SystemException ex)
