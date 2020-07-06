@@ -359,7 +359,7 @@ namespace cinema_core.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("PromotionId")
+                    b.Property<int?>("PromotionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Seat")
@@ -544,11 +544,9 @@ namespace cinema_core.Migrations
 
             modelBuilder.Entity("cinema_core.Models.Ticket", b =>
                 {
-                    b.HasOne("cinema_core.Models.Promotion", "Promotion")
+                    b.HasOne("cinema_core.Models.Promotion", null)
                         .WithMany("Tickets")
-                        .HasForeignKey("PromotionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PromotionId");
 
                     b.HasOne("cinema_core.Models.Showtime", "Showtime")
                         .WithMany("Tickets")
