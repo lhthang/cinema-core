@@ -66,6 +66,34 @@ namespace cinema_core.Repositories.Implements
             return results;
         }
 
+        public ICollection<ShowtimeDTO> GetShowtimesByClusterIdAndMovieId(int clusterId, int movieId)
+        {
+            List<ShowtimeDTO> results = new List<ShowtimeDTO>();
+            var cluster = dbContext.Clusters
+                                .Where(c => c.Id == clusterId)
+                                .Include(c => c.Rooms)
+                                .FirstOrDefault();
+            List<int> roomIds = new List<int>();
+            if (cluster != null)
+            {
+                foreach (Room room in cluster.Rooms)
+                {
+                    roomIds.Add(room.Id);
+                }
+            }
+            var showtimes = dbContext.Showtime
+                                .Where(s => roomIds.Contains(s.RoomId) && s.MovieId == movieId)
+                                .Include(m => m.Movie)
+                                .Include(r => r.Room)
+                                .Include(st => st.ScreenType)
+                                .ToList();
+            foreach (Showtime showtime in showtimes)
+            {
+                results.Add(new ShowtimeDTO(showtime));
+            }
+            return results;
+        }
+
         public ICollection<ShowtimeDTO> GetShowtimesByRoomId(int roomId)
         {
             List<ShowtimeDTO> results = new List<ShowtimeDTO>();

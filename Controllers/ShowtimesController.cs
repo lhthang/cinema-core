@@ -33,7 +33,7 @@ namespace cinema_core.Controllers
 
         //GET: api/showtimes
         [HttpGet]
-        public IActionResult Get(int skip = 0, int limit = 100000, int cluster = -1)
+        public IActionResult Get(int skip = 0, int limit = 100000, int cluster = -1, int movie = -1)
         {
             if (limit <= 0)
             {
@@ -43,7 +43,14 @@ namespace cinema_core.Controllers
             ICollection<ShowtimeDTO> showtimes;
             if (cluster != -1)
             {
-                showtimes = showtimeRepository.GetShowtimesByClusterId(cluster);
+                if (movie != -1)
+                {
+                    showtimes = showtimeRepository.GetShowtimesByClusterIdAndMovieId(cluster, movie);
+                }
+                else
+                {
+                    showtimes = showtimeRepository.GetShowtimesByClusterId(cluster);
+                }
             }
             else
             {
