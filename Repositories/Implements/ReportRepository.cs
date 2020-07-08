@@ -51,7 +51,7 @@ namespace cinema_core.Repositories.Implements
                 var report = new ReportDTO()
                 {
                     MovieId = movie.Id,
-                    Title = movie.Title,
+                    Movie = movie.Title,
                     Showtimes = showtimes.Count(),
                 };
                 decimal totalPrice = 0;
@@ -62,7 +62,7 @@ namespace cinema_core.Repositories.Implements
                     totalTickets += r.tickets;
                 }
                 report.Tickets = totalTickets;
-                report.Revenue = totalPrice;
+                report.TotalPrice = totalPrice;
                 reports.Add(report);
             }
             return reports;
