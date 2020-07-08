@@ -1,4 +1,5 @@
 ﻿using cinema_core.Repositories;
+using cinema_core.Repositories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NCrontab;
@@ -46,9 +47,11 @@ namespace cinema_core.Utils.Schedule
 
         private void Process()
         {
+            var promotionRepository = _service.CreateScope().ServiceProvider.GetRequiredService<IPromotionRepository>();
             var showtimeRepository = _service.CreateScope().ServiceProvider.GetRequiredService<IShowtimeRepository>();
-            System.Diagnostics.Debug.WriteLine("Update showtime at... "+DateTime.Now.ToString("F"));
+            System.Diagnostics.Debug.WriteLine("Update at... "+DateTime.Now.ToString("F"));
             showtimeRepository.AutoUpdateShowtime();
+            promotionRepository.AutoUpdatePromotion();
         }
     }
 }

@@ -14,5 +14,7 @@ namespace cinema_core.Repositories.Interfaces
         public List<TicketDTO> BuyTickets(string username, TicketRequest ticketRequest);
         //public TicketDTO UpdateTicket(int id, TicketRequest ticketRequest);
         public bool DeleteTicket(int id);
+
+        public List<TicketDTO> GetAllTicketsByShowtimeId(int id);
     }
 }

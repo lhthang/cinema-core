@@ -229,5 +229,16 @@ namespace cinema_core.Repositories.Implements
             }
             return ticketPrice;
         }
+
+        public List<TicketDTO> GetAllTicketsByShowtimeId(int id)
+        {
+            List<TicketDTO> ticketDTOs = new List<TicketDTO>();
+            var tickets = dbContext.Tickets.Where(t => t.ShowtimeId == id).ToList();
+            foreach(var ticket in tickets)
+            {
+                ticketDTOs.Add(new TicketDTO(ticket));
+            }
+            return ticketDTOs;
+        }
     }
 }

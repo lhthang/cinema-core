@@ -13,6 +13,7 @@ namespace cinema_core.Repositories.Interfaces
 		PromotionDTO GetPromotionById(int Id);
 		PromotionDTO CreatePromotion(PromotionRequest promotionRequest);
 		PromotionDTO UpdatePromotion(int id, PromotionRequest promotionRequest);
+		void AutoUpdatePromotion();
 		bool DeletePromotion(int id);
 	}
 }

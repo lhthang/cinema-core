@@ -23,14 +23,16 @@ namespace cinema_core.Controllers
         private IMovieRepository movieRepository;
         private IScreenTypeRepository screenTypeRepository;
         private IRoomRepository roomRepository;
+        private ITicketRepository ticketRepository;
 
         public ShowtimesController(IShowtimeRepository showtimeRepository, IMovieRepository movieRepository,
-                IScreenTypeRepository screenTypeRepository, IRoomRepository roomRepository)
+                IScreenTypeRepository screenTypeRepository, IRoomRepository roomRepository, ITicketRepository ticket)
         {
             this.showtimeRepository = showtimeRepository;
             this.movieRepository = movieRepository;
             this.screenTypeRepository = screenTypeRepository;
             this.roomRepository = roomRepository;
+            this.ticketRepository = ticket;
         }
 
         //GET: api/showtimes
@@ -72,7 +74,14 @@ namespace cinema_core.Controllers
                 return NotFound();
             }
             var showtimeDTO = new ShowtimeDTO(showtime);
-            return Ok(showtimeDTO);
+            var tickets = ticketRepository.GetAllTicketsByShowtimeId(id);
+
+            List<string> seats = new List<string>();
+            foreach(var ticket in tickets)
+            {
+                seats.Add(ticket.Seat);
+            }
+            return Ok(new { showtime = showtimeDTO,seats = seats});
         }
 
         // POST: api/showtimes
