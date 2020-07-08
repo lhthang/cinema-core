@@ -25,5 +25,6 @@ namespace cinema_core.Form
         public string Seat { get; set; }
         [Required]
         public TicketType TicketType { get; set; }
+        public string PromotionCode { get; set; }
     }
 }

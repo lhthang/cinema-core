@@ -174,14 +174,14 @@ namespace cinema_core.Models.Base
                 .HasOne(t => t.Showtime)
                 .WithMany(s => s.Tickets)
                 .HasForeignKey(t => t.ShowtimeId);
-            //modelBuilder.Entity<Ticket>()
-            //    .HasOne(t => t.Promotion)
-            //    .WithMany(p => p.Tickets);
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Promotion)
+                .WithMany(p => p.Tickets);
 
-            ////Promotion
-            //modelBuilder.Entity<Promotion>()
-            //    .HasMany(p => p.Tickets)
-            //    .WithOne(t => t.Promotion);
+            //Promotion
+            modelBuilder.Entity<Promotion>()
+                .HasMany(p => p.Tickets)
+                .WithOne(t => t.Promotion);
         }
     }
 }

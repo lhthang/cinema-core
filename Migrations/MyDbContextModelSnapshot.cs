@@ -544,7 +544,7 @@ namespace cinema_core.Migrations
 
             modelBuilder.Entity("cinema_core.Models.Ticket", b =>
                 {
-                    b.HasOne("cinema_core.Models.Promotion", null)
+                    b.HasOne("cinema_core.Models.Promotion", "Promotion")
                         .WithMany("Tickets")
                         .HasForeignKey("PromotionId");
 

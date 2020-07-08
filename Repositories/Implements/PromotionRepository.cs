@@ -48,6 +48,24 @@ namespace cinema_core.Repositories.Implements
 			return new PromotionDTO(promotion);
 		}
 
+		public PromotionDTO UpdatePromotion(int id, PromotionRequest promotionRequest)
+		{
+			var isExist = dbContext.Promotions.Where(p => p.Code == promotionRequest.Code && p.IsActive == true).FirstOrDefault();
+			if (isExist != null) throw new CustomException(HttpStatusCode.BadRequest, "This promotion is active");
+
+			var promotion = dbContext.Promotions.FirstOrDefault(x => x.Id == id);
+			if (promotion == null)
+				throw new CustomException(HttpStatusCode.BadRequest, "Promotion not found");
+
+			promotion.Code = promotionRequest.Code;
+			promotion.DiscountAmount = promotionRequest.DiscountAmount;
+			promotion.ExpiredDate = promotionRequest.ExpiredDate;
+			promotion.IsActive = promotionRequest.IsActive;
+			Save();
+
+			return new PromotionDTO(promotion);
+		}
+
 		public bool DeletePromotion(int id)
 		{
 			var promotion = dbContext.Promotions.Where(p => p.Id == id).FirstOrDefault();
@@ -63,6 +81,17 @@ namespace cinema_core.Repositories.Implements
 			return new PromotionDTO(promotion);
 		}
 
+		public bool CheckPromotion(string promotionCode)
+		{
+			var isExist = dbContext.Promotions.FirstOrDefault(p => p.Code == promotionCode && p.IsActive == true);
+			if (isExist == null)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		public ICollection<PromotionDTO> GetPromotions(int skip, int limit)
 		{
 			List<PromotionDTO> promotionDTOs = new List<PromotionDTO>();
@@ -72,11 +101,6 @@ namespace cinema_core.Repositories.Implements
 				promotionDTOs.Add(new PromotionDTO(promotion));
 			}
 			return promotionDTOs;
-		}
-
-		public PromotionDTO UpdatePromotion(int id, PromotionRequest promotionRequest)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

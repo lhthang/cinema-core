@@ -49,13 +49,15 @@ namespace cinema_core.Repositories.Implements
 
             foreach (var seat in ticketRequest.Seats)
             {
+                var promotionFound = dbContext.Promotions.FirstOrDefault(x => x.Code == seat.PromotionCode && x.IsActive == true);
                 var ticket = new Ticket()
                 {
                     Username = username,
                     ShowtimeId = ticketRequest.ShowtimeId,
                     TicketType = seat.TicketType,
                     Seat = seat.Seat,
-                    Price = GetTicketPrice(ticketRequest.ShowtimeId, seat.TicketType),
+                    PromotionId = promotionFound != null ? promotionFound.Id : (int?)null,
+                    Price = GetTicketPrice(ticketRequest.ShowtimeId, seat.TicketType, promotionFound),
                     ModifiedAt = DateTime.Now,
                 };
                 ticketsToAdd.Add(ticket);
@@ -134,7 +136,8 @@ namespace cinema_core.Repositories.Implements
                 return new TicketSeatRequest()
                 {
                     Seat = newSeatStr,
-                    TicketType = seat.TicketType
+                    TicketType = seat.TicketType,
+                    PromotionCode = seat.PromotionCode
                 };
             }).ToList();
 
@@ -146,6 +149,16 @@ namespace cinema_core.Repositories.Implements
             var showtime = dbContext.Showtime.Include(x => x.Room).FirstOrDefault(x => x.Id == ticketRequest.ShowtimeId);
             if (showtime == null)
                 throw new CustomException(HttpStatusCode.BadRequest,"Cannot find Showtime.");
+
+            foreach (var seat in ticketRequest.Seats)
+            {
+                if (!string.IsNullOrEmpty(seat.PromotionCode))
+                {
+                    var promotion = dbContext.Promotions.FirstOrDefault(x => x.Code == seat.PromotionCode && x.IsActive == true);
+                    if (promotion == null)
+                        throw new CustomException(HttpStatusCode.BadRequest, "Promotion not found.");
+                }
+            }
 
             if (ticketRequest.Seats.Count <= 0)
             {
@@ -212,10 +225,15 @@ namespace cinema_core.Repositories.Implements
    //         }
         }
 
-        private decimal GetTicketPrice(int showtimeId, TicketType ticketType)
+        private decimal GetTicketPrice(int showtimeId, TicketType ticketType, Promotion promotion)
         {
             var showtime = dbContext.Showtime.FirstOrDefault(x => x.Id == showtimeId);
             decimal ticketPrice = showtime.BasePrice;
+
+            if (promotion != null)
+            {
+                ticketPrice = ticketPrice - promotion.DiscountAmount > 0 ? ticketPrice - promotion.DiscountAmount : 0;
+            }
 
             // Temp Hardcode. TODO: Save ticketType's price somewhere else
             switch (ticketType)
