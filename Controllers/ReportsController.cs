@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using cinema_core.Form;
 using cinema_core.Repositories.Interfaces;
+using cinema_core.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +23,7 @@ namespace cinema_core.Controllers
 
         // POST: api/reports
         [HttpPost]
+        [Authorize(Roles = Authorize.Admin+","+Authorize.Staff)]
         public IActionResult Post([FromBody] ReportRequest request)
         {
 

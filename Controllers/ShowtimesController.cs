@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using cinema_core.Models;
+using Microsoft.AspNetCore.Authorization;
+using cinema_core.Utils;
 
 namespace cinema_core.Controllers
 {
@@ -59,6 +61,7 @@ namespace cinema_core.Controllers
 
         // POST: api/showtimes
         [HttpPost]
+        [Authorize(Roles = Authorize.Admin + "," + Authorize.Staff)]
         public IActionResult Post([FromBody] ShowtimeRequest showtimeRequest)
         {
             if (showtimeRequest == null)
@@ -85,6 +88,7 @@ namespace cinema_core.Controllers
 
         // POST: api/showtimes
         [HttpPut("{id}")]
+        [Authorize(Roles = Authorize.Admin + "," + Authorize.Staff)]
         public IActionResult Put(int id, [FromBody] ShowtimeRequest showtimeRequest)
         {
             if (showtimeRepository.GetShowtimeById(id) == null)
@@ -115,6 +119,7 @@ namespace cinema_core.Controllers
 
         // DELETE: api/showtimes/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = Authorize.Admin + "," + Authorize.Staff)]
         public IActionResult Delete(int id)
         {
             var showtime = showtimeRepository.GetShowtimeById(id);

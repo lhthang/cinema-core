@@ -6,6 +6,7 @@ using cinema_core.DTOs.RateDTOs;
 using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Repositories.Interfaces;
+using cinema_core.Utils;
 using cinema_core.Utils.ErrorHandle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,6 +57,7 @@ namespace cinema_core.Controllers
 
         // POST: api/rates
         [HttpPost]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Post([FromBody] RateRequest rateRequest)
         {
             if (rateRequest == null)
@@ -76,6 +78,7 @@ namespace cinema_core.Controllers
 
         // PUT: api/rates/5
         [HttpPut("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Put(int id, [FromBody] RateRequest rateRequest)
         {
             if (rateRequest == null)
@@ -96,6 +99,7 @@ namespace cinema_core.Controllers
 
         // DELETE: api/rates/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Delete(int id)
         {
             try
