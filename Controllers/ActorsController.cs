@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using cinema_core.DTOs.MovieDTOs;
+using cinema_core.ErrorHandle;
 using cinema_core.Models;
 using cinema_core.Repositories.Interfaces;
+using cinema_core.Utils;
 using cinema_core.Utils.ErrorHandle;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,26 +47,81 @@ namespace cinema_core.Controllers
             return Ok(new ActorDTO(actor));
         }
 
+        [HttpDelete("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                var actor = actorRepository.DeleteActorById(id);
+                return Ok(new ActorDTO(actor));
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         [HttpPut("{id}")]
+        [Authorize(Roles =Authorize.Admin)]
         public IActionResult Put(int id, [FromBody] Actor actor)
         {
-            var isExist = actorRepository.GetActorById(id);
-            if (isExist == null) return NotFound();
-
-            if (actor == null) return StatusCode(400, ModelState);
-
-
-            if (!ModelState.IsValid)
-                return StatusCode(400, ModelState);
-
-            var updatedActor = actorRepository.UpdateActor(id,actor);
-
-            if (updatedActor==null)
+            try
             {
-                ModelState.AddModelError("", "Something went wrong when update actor");
-                return StatusCode(400, ModelState);
+                var isExist = actorRepository.GetActorById(id);
+
+
+                if (!ModelState.IsValid)
+                {
+                    string messages = string.Join("; ", ModelState.Values
+                                        .SelectMany(x => x.Errors)
+                                        .Select(x => x.ErrorMessage));
+                    throw new CustomException(HttpStatusCode.BadRequest, messages);
+                }
+                    
+
+                var updatedActor = actorRepository.UpdateActor(id, actor);
+
+                if (updatedActor == null)
+                {
+                    ModelState.AddModelError("", "Something went wrong when update actor");
+                    string messages = string.Join("; ", ModelState.Values
+                                        .SelectMany(x => x.Errors)
+                                        .Select(x => x.ErrorMessage));
+                    throw new CustomException(HttpStatusCode.BadRequest, messages);
+                }
+                return Ok(new ActorDTO(actor));
             }
-            return Ok(new ActorDTO(actor));
+            catch(Exception e)
+            {
+                throw e;
+            }
+        }
+
+        [HttpPost("")]
+        [Authorize(Roles = Authorize.Admin)]
+        public IActionResult Post([FromBody] Actor actor)
+        {
+            try
+            {
+                var isExist = actorRepository.GetActorByName(actor.Name);
+
+                if (!ModelState.IsValid)
+                {
+                    string messages = string.Join("; ", ModelState.Values
+                                        .SelectMany(x => x.Errors)
+                                        .Select(x => x.ErrorMessage));
+                    throw new CustomException(HttpStatusCode.BadRequest, messages);
+                }
+
+
+                var result = actorRepository.AddActor(actor);
+                return Ok(new ActorDTO(result));
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
     }
 }

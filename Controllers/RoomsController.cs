@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using cinema_core.DTOs.RoomDTOs;
 using cinema_core.Form;
 using cinema_core.Repositories;
+using cinema_core.Utils;
 using cinema_core.Utils.ErrorHandle;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -58,6 +60,7 @@ namespace cinema_core.Controllers
 
         // POST: api/rooms
         [HttpPost]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Post([FromBody] RoomRequest roomRequest)
         {
             if (roomRequest == null) return StatusCode(400, ModelState);
@@ -79,6 +82,7 @@ namespace cinema_core.Controllers
 
         // POST: api/rooms
         [HttpPut("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Put(int id,[FromBody] RoomRequest roomRequest)
         {
             if (roomRepository.GetRoomById(id) == null) return NotFound();
@@ -101,6 +105,7 @@ namespace cinema_core.Controllers
 
         // DELETE: api/room/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Delete(int id)
         {
             var isExist = roomRepository.GetRoomById(id);

@@ -7,7 +7,9 @@ using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Repositories;
 using cinema_core.Repositories.Interfaces;
+using cinema_core.Utils;
 using cinema_core.Utils.ErrorHandle;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -77,8 +79,9 @@ namespace cinema_core.Controllers
         }
 
 
-        // POST: api/rooms
+        // POST: api/movies
         [HttpPost]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Post([FromBody] MovieRequest movieRequest)
         {
             if (movieRequest == null) return StatusCode(400, ModelState);
@@ -97,6 +100,7 @@ namespace cinema_core.Controllers
 
         // POST: api/rooms
         [HttpPut("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Put(int id,[FromBody] UpdateMovieRequest movieRequest)
         {
             if (movieRepository.GetMovieById(id) == null) return NotFound();
@@ -117,6 +121,7 @@ namespace cinema_core.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Delete(int id)
         {
             var isExist = movieRepository.GetMovieById(id);

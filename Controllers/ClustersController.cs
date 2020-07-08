@@ -1,7 +1,9 @@
 ﻿using cinema_core.DTOs.ClusterDTOs;
 using cinema_core.Form;
 using cinema_core.Repositories;
+using cinema_core.Utils;
 using cinema_core.Utils.ErrorHandle;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -53,6 +55,7 @@ namespace cinema_core.Controllers
 
         // POST: api/clusters
         [HttpPost]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Post([FromBody] ClusterRequest clusterRequest)
         {
             if (clusterRequest == null) 
@@ -80,6 +83,7 @@ namespace cinema_core.Controllers
 
         // POST: api/clusters
         [HttpPut("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Put(int id, [FromBody] ClusterRequest clusterRequest)
         {
             if (clusterRepository.GetClusterById(id) == null)
@@ -110,6 +114,7 @@ namespace cinema_core.Controllers
 
         // DELETE: api/clusters/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Delete(int id)
         {
             var cluster = clusterRepository.GetClusterById(id);

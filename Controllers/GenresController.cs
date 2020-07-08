@@ -1,7 +1,9 @@
 ﻿using cinema_core.DTOs.GenreDTOs;
 using cinema_core.Form;
 using cinema_core.Repositories.Interfaces;
+using cinema_core.Utils;
 using cinema_core.Utils.ErrorHandle;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -53,6 +55,7 @@ namespace cinema_core.Controllers
 
         // POST: api/genres
         [HttpPost]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Post([FromBody] GenreRequest genreRequest)
         {
             if (genreRequest == null)
@@ -73,6 +76,7 @@ namespace cinema_core.Controllers
 
         // PUT: api/genres/5
         [HttpPut("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Put(int id, [FromBody] GenreRequest genreRequest)
         {
             if (genreRequest == null)
@@ -93,6 +97,7 @@ namespace cinema_core.Controllers
 
         // DELETE: api/genres/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = Authorize.Admin)]
         public IActionResult Delete(int id)
         {
             try

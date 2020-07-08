@@ -186,7 +186,7 @@ namespace cinema_core.Repositories.Implements
         {
             var startOfDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
             var endOfDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59);
-            var showtimes = dbContext.Showtime.Where(s => s.StartAt.CompareTo(startOfDay) >= 0 && s.StartAt.CompareTo(endOfDay) <= 0&&s.Status=="OPEN")
+            var showtimes = dbContext.Showtime.Where(s => s.StartAt.CompareTo(endOfDay) <= 0&&s.Status=="OPEN")
                 .OrderByDescending(c => c.StartAt).ToList();
 
             foreach( var showtime in showtimes)

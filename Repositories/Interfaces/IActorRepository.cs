@@ -14,6 +14,12 @@ namespace cinema_core.Repositories.Interfaces
 
         public Actor GetActorById(int id);
 
+        public Actor AddActor(Actor actor);
+
+        public Actor GetActorByName(string name);
+
+        public Actor DeleteActorById(int id);
+
         public bool Save();
     }
 }
