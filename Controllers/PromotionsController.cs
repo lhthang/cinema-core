@@ -58,8 +58,8 @@ namespace cinema_core.Controllers
         {
             try
             {
-                bool isValid = promotionRepository.CheckPromotion(promotionCode);
-                return Ok(new { isValid });
+                var promotion = promotionRepository.CheckPromotion(promotionCode);
+                return Ok(promotion);
             }
             catch (Exception e)
             {

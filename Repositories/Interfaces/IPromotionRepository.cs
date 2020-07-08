@@ -11,7 +11,7 @@ namespace cinema_core.Repositories.Interfaces
 	{
 		ICollection<PromotionDTO> GetPromotions(int skip, int limit);
 		PromotionDTO GetPromotionById(int Id);
-		bool CheckPromotion(string promotionCode);
+		PromotionDTO CheckPromotion(string promotionCode);
 		PromotionDTO CreatePromotion(PromotionRequest promotionRequest);
 		PromotionDTO UpdatePromotion(int id, PromotionRequest promotionRequest);
 		void AutoUpdatePromotion();

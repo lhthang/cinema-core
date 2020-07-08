@@ -81,15 +81,15 @@ namespace cinema_core.Repositories.Implements
 			return new PromotionDTO(promotion);
 		}
 
-		public bool CheckPromotion(string promotionCode)
+		public PromotionDTO CheckPromotion(string promotionCode)
 		{
-			var isExist = dbContext.Promotions.FirstOrDefault(p => p.Code == promotionCode && p.IsActive == true);
-			if (isExist == null)
+			var promotionFound = dbContext.Promotions.FirstOrDefault(p => p.Code == promotionCode && p.IsActive == true);
+			if (promotionFound == null)
 			{
-				return false;
+				return null;
 			}
 
-			return true;
+			return new PromotionDTO(promotionFound);
 		}
 
 		public ICollection<PromotionDTO> GetPromotions(int skip, int limit)
