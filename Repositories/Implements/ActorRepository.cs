@@ -1,7 +1,9 @@
 ﻿using cinema_core.DTOs.MovieDTOs;
 using cinema_core.ErrorHandle;
+using cinema_core.Form;
 using cinema_core.Models;
 using cinema_core.Models.Base;
+using cinema_core.Repositories.Base;
 using cinema_core.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,37 +13,27 @@ using System.Threading.Tasks;
 
 namespace cinema_core.Repositories.Implements
 {
-    public class ActorRepository : IActorRepository
+    public class ActorRepository : BaseRepository, IActorRepository
     {
-        private MyDbContext dbContext;
-
-        public ActorRepository(MyDbContext context)
+        public ActorRepository(MyDbContext context) : base(context)
         {
-            dbContext = context;
         }
 
-        public Actor AddActor(Actor actor)
+        public ActorDTO GetActorById(int id)
         {
-            dbContext.Add(actor);
-            var success = Save();
-            if (!success) throw new CustomException(HttpStatusCode.BadRequest, "Something went wrong when save this actor");
-            return actor;
+            var actor = GetActorEntityById(id);
+            return new ActorDTO(actor);
         }
 
-        public Actor DeleteActorById(int id)
+        public ICollection<ActorDTO> GetActors(int skip, int limit)
         {
-            var actor = GetActorById(id);
-            dbContext.Remove(actor);
-            var success = Save();
-            if (!success) throw new CustomException(HttpStatusCode.BadRequest, "Something went wrong when delete this actor");
-            return actor;
-        }
-
-        public Actor GetActorById(int id)
-        {
-            var actor = dbContext.Actors.Where(a => a.Id == id).FirstOrDefault();
-            if (actor == null) throw new CustomException(HttpStatusCode.NotFound, "Actor not found");
-            return actor;
+            List<ActorDTO> results = new List<ActorDTO>();
+            var actors = dbContext.Actors.OrderBy(sc => sc.Id).Skip(skip).Take(limit).ToList();
+            foreach (Actor actor in actors)
+            {
+                results.Add(new ActorDTO(actor));
+            }
+            return results;
         }
 
         public Actor GetActorByName(string name)
@@ -49,30 +41,48 @@ namespace cinema_core.Repositories.Implements
             throw new NotImplementedException();
         }
 
-        public ICollection<ActorDTO> GetAllActors(int skip, int limit)
+        public ActorDTO CreateActor(ActorRequest actorRequest)
         {
-            var actors = dbContext.Actors.OrderBy(a => a.Name).Skip(skip).Take(limit).ToList();
-            List<ActorDTO> actorDTOs = new List<ActorDTO>();
-            foreach (var actor in actors)
+            var actor = new Actor()
             {
-                actorDTOs.Add(new ActorDTO(actor));
-            }
-            return actorDTOs;
+                Name = actorRequest.Name,
+                Avatar = actorRequest.Avatar,
+            };
+
+            dbContext.Add(actor);
+            Save();
+            return new ActorDTO(actor);
         }
 
-        public bool Save()
+        public ActorDTO UpdateActor(int id, ActorRequest actorRequest)
         {
-            return dbContext.SaveChanges() > 0;
+            var actor = GetActorEntityById(id);
+
+            actor.Name = actorRequest.Name;
+            actor.Avatar = actorRequest.Avatar;
+
+            dbContext.Update(actor);
+            Save();
+            return new ActorDTO(actor);
         }
 
-        public Actor UpdateActor(int id,Actor actor)
+        public bool DeleteActor(int id)
         {
-            var actorInDb = dbContext.Actors.Where(a => a.Id == id).FirstOrDefault();
-            actorInDb.Avatar = actor.Avatar;
-            dbContext.Update(actorInDb);
-            var isSuccess = Save();
-            if (!isSuccess) return null;
-            return actorInDb;
+            var actorToDelete = GetActorEntityById(id);
+
+            dbContext.Remove(actorToDelete);
+            Save();
+            return true;
         }
+
+        private Actor GetActorEntityById(int id)
+        {
+            var actor = dbContext.Actors.Where(r => r.Id == id).FirstOrDefault();
+            if (actor == null)
+                throw new Exception("Id not found.");
+
+            return actor;
+        }
+
     }
 }
