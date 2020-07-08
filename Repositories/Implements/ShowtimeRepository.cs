@@ -22,7 +22,7 @@ namespace cinema_core.Repositories.Implements
             dbContext = context;
         }
 
-        public ICollection<ShowtimeDTO> GetAllShowtimes(int skip, int limit, int clusterId)
+        public ICollection<ShowtimeDTO> GetAllShowtimes(int skip, int limit)
         {
             List<ShowtimeDTO> results = new List<ShowtimeDTO>();
             List<Showtime> showtimes = new List<Showtime>();
@@ -33,12 +33,6 @@ namespace cinema_core.Repositories.Implements
                                             .OrderBy(c => c.Id).Skip(skip).Take(limit)
                                             .ToList();
 
-            var cluster = dbContext.Clusters.Where(c => c.Id == clusterId).FirstOrDefault();
-
-            if (cluster != null)
-            {
-                showtimes = showtimes.Where(s => s.Room.ClusterId == clusterId).ToList();
-            }
             foreach (Showtime showtime in showtimes)
             {
                 results.Add(new ShowtimeDTO(showtime));
