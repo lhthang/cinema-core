@@ -47,13 +47,20 @@ namespace cinema_core.Repositories.Implements
             return Save();
         }
 
-        public ICollection<RoomDTO> GetAllRooms(int skip,int limit)
+        public ICollection<RoomDTO> GetAllRooms(int skip,int limit, int clusterId)
         {
             List<RoomDTO> results = new List<RoomDTO>();
-            List<Room> rooms = dbContext.Rooms
+            List<Room> rooms = new List<Room>();
+
+            var cluster = dbContext.Clusters.Where(c => c.Id == clusterId).FirstOrDefault();
+            rooms = dbContext.Rooms
                                 .Include(rs => rs.RoomScreenTypes).ThenInclude(s => s.ScreenType)
                                 .Include(c => c.Cluster)
                                 .OrderBy(r => r.Id).Skip(skip).Take(limit).ToList();
+            if (cluster!=null)
+            {
+                rooms = rooms.Where(r => r.ClusterId == clusterId).ToList();
+            }
             foreach (Room room in rooms)
             {
                 //System.Diagnostics.Debug.WriteLine();

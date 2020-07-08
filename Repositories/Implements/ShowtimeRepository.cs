@@ -19,15 +19,23 @@ namespace cinema_core.Repositories.Implements
             dbContext = context;
         }
 
-        public ICollection<ShowtimeDTO> GetAllShowtimes(int skip, int limit)
+        public ICollection<ShowtimeDTO> GetAllShowtimes(int skip, int limit, int clusterId)
         {
             List<ShowtimeDTO> results = new List<ShowtimeDTO>();
-            List<Showtime> showtimes = dbContext.Showtime
+            List<Showtime> showtimes = new List<Showtime>();
+            showtimes = dbContext.Showtime
                                             .Include(m => m.Movie)
-                                            .Include(r => r.Room)
+                                            .Include(r => r.Room).ThenInclude(c=>c.Cluster)
                                             .Include(st => st.ScreenType)
                                             .OrderBy(c => c.Id).Skip(skip).Take(limit)
                                             .ToList();
+
+            var cluster = dbContext.Clusters.Where(c => c.Id == clusterId).FirstOrDefault();
+
+            if (cluster != null)
+            {
+                showtimes = showtimes.Where(s => s.Room.ClusterId == clusterId).ToList();
+            }
             foreach (Showtime showtime in showtimes)
             {
                 results.Add(new ShowtimeDTO(showtime));

@@ -130,6 +130,7 @@ namespace cinema_core.Repositories.Implements
         {
             var movies = dbContext.Movies.OrderByDescending(m=>m.ReleasedAt)
                 .Include(r=>r.Rate)
+                .Include(mg=>mg.MovieGenres).ThenInclude(g=>g.Genre)
                 .Include(ms => ms.MovieScreenTypes).ThenInclude(s => s.ScreenType)
                 .Include(ma => ma.MovieActors).ThenInclude(a => a.Actor).ToList();
 

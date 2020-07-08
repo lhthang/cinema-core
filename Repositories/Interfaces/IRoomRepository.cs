@@ -10,7 +10,7 @@ namespace cinema_core.Repositories
 {
     public interface IRoomRepository
     {
-        ICollection<RoomDTO> GetAllRooms(int skip, int limit);
+        ICollection<RoomDTO> GetAllRooms(int skip, int limit,int clusterId);
         Room GetRoomById(int id);
 
         Room CreateRoom(RoomRequest roomRequest);
