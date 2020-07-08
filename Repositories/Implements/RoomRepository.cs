@@ -69,6 +69,23 @@ namespace cinema_core.Repositories.Implements
             return results;
         }
 
+        public ICollection<RoomDTO> GetRoomsByClusterId(int clusterId)
+        {
+            List<RoomDTO> results = new List<RoomDTO>();
+            var cluster = dbContext.Clusters
+                                .Where(c => c.Id == clusterId)
+                                .Include(c => c.Rooms).ThenInclude(r => r.RoomScreenTypes).ThenInclude(s => s.ScreenType)
+                                .FirstOrDefault();
+            if (cluster != null)
+            {
+                foreach (Room room in cluster.Rooms)
+                {
+                    results.Add(new RoomDTO(room));
+                }
+            }
+            return results;
+        }
+
         public Room GetRoomById(int id)
         {
             var room = dbContext.Rooms

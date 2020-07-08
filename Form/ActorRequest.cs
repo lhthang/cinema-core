@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace cinema_core.Form
 {
-    public class GenreRequest
-    {
-        [Required]
-        public string Name { get; set; }
+	public class ActorRequest
+	{
 
-        public string Description { get; set; }
-    }
+		[Required]
+		public string Name { get; set; }
+		public string Avatar { get; set; }
+	}
 }

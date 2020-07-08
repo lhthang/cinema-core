@@ -36,6 +36,7 @@ namespace cinema_core.Models.Base
 
         public virtual DbSet<Showtime> Showtime { get; set; }
         public virtual DbSet<Ticket> Tickets { get; set; }
+        public virtual DbSet<Promotion> Promotions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -173,6 +174,14 @@ namespace cinema_core.Models.Base
                 .HasOne(t => t.Showtime)
                 .WithMany(s => s.Tickets)
                 .HasForeignKey(t => t.ShowtimeId);
+            //modelBuilder.Entity<Ticket>()
+            //    .HasOne(t => t.Promotion)
+            //    .WithMany(p => p.Tickets);
+
+            ////Promotion
+            //modelBuilder.Entity<Promotion>()
+            //    .HasMany(p => p.Tickets)
+            //    .WithOne(t => t.Promotion);
         }
     }
 }

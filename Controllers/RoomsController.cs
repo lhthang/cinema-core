@@ -29,7 +29,8 @@ namespace cinema_core.Controllers
         }
         // GET: api/rooms
         [HttpGet]
-        public IActionResult Get(int skip=0,int limit=100000,int cluster=0)
+        public IActionResult Get(int skip=0,int limit=100000, int cluster=-1)
+
         {
             if (limit <= 0)
             {
