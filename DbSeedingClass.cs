@@ -35,6 +35,13 @@ namespace cinema_core
                             Name = "User",
                         }
                    },
+                   new UserRole()
+                   {
+                       Role= new Role()
+                       {
+                           Name = "Staff",
+                       }
+                   }
                 },
             };
             if (context.Users.Any(u => u.Username == "cinema-admin") == false)
