@@ -44,10 +44,12 @@ namespace cinema_core.Utils.JWT
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
             };
 
+            //List<Role> myRole
             foreach (var userRole in roles)
             {
                 claims.Add(new Claim("roles", userRole.Name));
             }
+            //claims.Add(new Claim("roles", roles));
             return claims;
         }
 

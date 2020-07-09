@@ -33,7 +33,7 @@ namespace cinema_core.Repositories.Implements
             foreach (var movie in movies)
             {
                 var showtimes = dbContext.Showtime.Where(
-                    s => s.Id == movie.Id
+                    s => s.MovieId == movie.Id
                     && s.StartAt.CompareTo(start) >= 0 && s.EndAt.CompareTo(end.AddDays(1)) < 0).ToList();
                 var result = (from showtime in showtimes
                               join ticket in dbContext.Tickets on showtime.Id equals ticket.ShowtimeId
