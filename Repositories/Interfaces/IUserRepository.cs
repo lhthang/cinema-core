@@ -18,5 +18,7 @@ namespace cinema_core.Repositories
         UserDTO CreateUser(UserRequest userRequest);
         UserDTO UpdateUser(int id,UserRequest userRequest);
         UserDTO UpdateRole(UpdateRoleRequest request);
+
+        List<Role> GetAllRoles();
     }
 }

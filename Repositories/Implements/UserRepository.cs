@@ -76,7 +76,7 @@ namespace cinema_core.Repositories.Implements
                 };
                 dbContext.Add(userRole);
             }
-            Save();
+            dbContext.SaveChanges();
             return new UserDTO(user);
         }
 
@@ -116,6 +116,11 @@ namespace cinema_core.Repositories.Implements
             dbContext.Update(user);
             Save();
             return new UserDTO(user);
+        }
+
+        public List<Role> GetAllRoles()
+        {
+            return dbContext.Roles.OrderBy(r => r.Id).ToList();
         }
     }
 }

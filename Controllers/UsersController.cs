@@ -31,6 +31,21 @@ namespace cinema_core.Controllers
         }
 
         // GET: api/users
+        [HttpGet("[action]")]
+        public IActionResult GetAllRoles()
+        {
+            try
+            {
+                var roles = userRepository.GetAllRoles();
+                return Ok(roles);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        // GET: api/users
         [HttpGet]
         [Authorize(Roles = Authorize.Admin)]
         public IActionResult Get()
