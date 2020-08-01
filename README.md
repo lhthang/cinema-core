@@ -17,3 +17,7 @@
 
 # Swagger
 * `localhost:{port}/swagger/index.html`
+
+# Related Apps
+* [Admin Website](https://github.com/tligodsp/asp-cinex-dashboard)
+* [User Website](https://github.com/tligodsp/asp-cinex)
